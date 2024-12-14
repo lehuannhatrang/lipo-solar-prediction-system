@@ -1,0 +1,112 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trendz-python-executor-deployment
+  namespace: trendz
+  labels:
+    app: trendz-python-executor-deployment-label
+spec:
+  selector:
+    matchLabels:
+      app: trendz-python-executor-pod-label
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      name: trendz-app-pod
+      labels:
+        app: trendz-python-executor-pod-label
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/path: '/actuator/prometheus'
+        prometheus.io/port: '8181'
+    spec:
+      terminationGracePeriodSeconds: 5
+#      affinity:
+#        nodeAffinity:
+#          requiredDuringSchedulingIgnoredDuringExecution:
+#            nodeSelectorTerms:
+#              - matchExpressions:
+#                  - key: trendz-node-type
+#                    operator: In
+#                    values:
+#                      - working-node
+      containers:
+        - name: trendz-python-executor-container
+          image: thingsboard/trendz-python-executor:1.11.2
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu:    "500m"
+              memory: "2000M"
+            requests:
+              cpu:    "500m"
+              memory: "2000M"
+          ports:
+            - name: exec-api-pod
+              protocol: TCP
+              containerPort: 8181
+          env:
+            - name: MAX_HEAP_SIZE
+              value: "1900M"
+            - name: SCRIPT_ENGINE_RUNTIME_TIMEOUT
+              value: "30000"
+            - name: EXECUTOR_MANAGER
+              value: "1"
+            - name: EXECUTOR_SCRIPT_ENGINE
+              value: "6"
+            - name: THROTTLING_QUEUE_CAPACITY
+              value: "10"
+            - name: NETWORK_BUFFER_SIZE
+              value: "5242880"
+          readinessProbe:
+            httpGet:
+              path: /actuator
+              port: 8181
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            timeoutSeconds: 1
+            failureThreshold: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator
+              port: 8181
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            timeoutSeconds: 1
+            failureThreshold: 10
+          startupProbe:
+            httpGet:
+              path: /actuator
+              port: 8181
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            timeoutSeconds: 1
+            failureThreshold: 10
+          volumeMounts:
+            - name: trendz-python-executor-config
+              mountPath: /app/config
+      volumes:
+        - name: trendz-python-executor-config
+          configMap:
+            name: trendz-python-executor-config
+            items:
+              - key: logback
+                path: logback.xml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trendz-python-executor-service
+  namespace: trendz
+spec:
+  type: ClusterIP
+  selector:
+    app: trendz-python-executor-pod-label
+  ports:
+    - name: executor-api-service
+      protocol: TCP
+      port: 8181
+      targetPort: exec-api-pod
+---

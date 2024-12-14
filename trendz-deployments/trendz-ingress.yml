@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: trendz-app-ingress
+  namespace: trendz
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-body-size: 16m
+    nginx.ingress.kubernetes.io/server-snippet: |
+      location ~* /trendz/actuator* {
+          deny all;
+          return 403;
+      }
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /trendz/*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: trendz-app-service
+                port:
+                  number: 8888
+          - path: /apiTrendz/*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: trendz-app-service
+                port:
+                  number: 8888
+---

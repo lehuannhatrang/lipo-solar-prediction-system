@@ -1,0 +1,131 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trendz-app-deployment
+  namespace: trendz
+  labels:
+    app: trendz-app-deployment-label
+spec:
+  selector:
+    matchLabels:
+      app: trendz-app-pod-label
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      name: trendz-app-pod
+      labels:
+        app: trendz-app-pod-label
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/path: '/actuator/prometheus'
+        prometheus.io/port: '8888'
+    spec:
+      terminationGracePeriodSeconds: 5
+#      affinity:
+#        nodeAffinity:
+#          requiredDuringSchedulingIgnoredDuringExecution:
+#            nodeSelectorTerms:
+#              - matchExpressions:
+#                  - key: trendz-node-type
+#                    operator: In
+#                    values:
+#                      - working-node
+      containers:
+        - name: trendz-app-container
+          image: thingsboard/trendz:1.11.2
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu:    "2200m"
+              memory: "3700M"
+            requests:
+              cpu:    "2200m"
+              memory: "3700M"
+          ports:
+            - name: app-api-pod
+              protocol: TCP
+              containerPort: 8888
+          env:
+            - name: TRENDZ_LICENSE_SECRET
+              value: "nQEXAmN7RTqgFtbxVGBLFrGi"
+            - name: TRENDZ_LICENSE_INSTANCE_DATA_FILE
+              value: "/data/license.data"
+            - name: JWT_TOKEN_SIGNING_KEY
+              value: "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzeXNhZG1pbkB0aGluZ3Nib2FyZC5vcmciLCJ1c2VySWQiOiJmNGQ2NWIzMC1iNmZiLTExZWYtYTkxNy1lOTIyOGM0NTI4OWYiLCJzY29wZXMiOlsiU1lTX0FETUlOIl0sInNlc3Npb25JZCI6ImE1MDRhNjI0LTg3ODAtNGZlZS05NTA1LWNhN2RmYTFiZjc3NSIsImV4cCI6MTczNDA5NjkwOSwiaXNzIjoidGhpbmdzYm9hcmQuaW8iLCJpYXQiOjE3MzQwODc5MDksImVuYWJsZWQiOnRydWUsImlzUHVibGljIjpmYWxzZSwidGVuYW50SWQiOiIxMzgxNDAwMC0xZGQyLTExYjItODA4MC04MDgwODA4MDgwODAiLCJjdXN0b21lcklkIjoiMTM4MTQwMDAtMWRkMi0xMWIyLTgwODAtODA4MDgwODA4MDgwIn0.h8C2Lj6lXEquOxlxkynlEANgNfrEnay63niPL3H9AtdEgXXaaeNGfI483oNgYTKpVa8t-JdpqKfn3eGv-Plurw"
+            - name: TB_API_URL
+              value: "http://192.168.4.160:8080"
+            - name: SCRIPT_ENGINE_PROVIDER
+              value: "DOCKER_CONTAINER"
+            - name: SCRIPT_ENGINE_DOCKER_PROVIDER_URL
+              value: "trendz-python-executor-service:8181"
+            - name: SCRIPT_ENGINE_TIMEOUT
+              value: "30000"
+            - name: SCRIPT_ENGINE_WEBSOCKET_CONCURRENCY
+              value: "5"
+          envFrom:
+            - configMapRef:
+                name: trendz-app-db-config
+          readinessProbe:
+            httpGet:
+              path: /trendz/actuator
+              port: 8888
+            initialDelaySeconds: 100
+            periodSeconds: 5
+            timeoutSeconds: 1
+            failureThreshold: 10
+          livenessProbe:
+            httpGet:
+              path: /trendz/actuator
+              port: 8888
+            initialDelaySeconds: 100
+            periodSeconds: 5
+            timeoutSeconds: 1
+            failureThreshold: 10
+          startupProbe:
+            httpGet:
+              path: /trendz/actuator
+              port: 8888
+            initialDelaySeconds: 100
+            periodSeconds: 5
+            timeoutSeconds: 1
+            failureThreshold: 10
+          volumeMounts:
+            - name: trendz-app-config
+              mountPath: /trendz-config-files
+            - name: trendz-app-logs
+              mountPath: /var/log/trendz
+            - name: trendz-app-pvc
+              mountPath: /data
+      volumes:
+        - name: trendz-app-config
+          configMap:
+            name: trendz-app-config
+            items:
+              - key: conf
+                path: trendz.conf
+              - key: logback
+                path: logback.xml
+        - name: trendz-app-logs
+          emptyDir: { }
+        - name: trendz-app-pvc
+          persistentVolumeClaim:
+            claimName: trendz-app-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trendz-app-service
+  namespace: trendz
+spec:
+  type: NodePort
+  selector:
+    app: trendz-app-pod-label
+  ports:
+    - name: app-api-service
+      protocol: TCP
+      port: 8888
+      targetPort: app-api-pod
+      nodePort: 30888
+---
