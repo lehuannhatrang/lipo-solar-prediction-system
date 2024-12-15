@@ -3,7 +3,7 @@ from flask import Blueprint
 from resources import ForecastResource
 
 # Initialize Blueprint for routes
-FORECAST_BLUEPRINT = Blueprint('api', __name__)
+FORECAST_BLUEPRINT = Blueprint('forecast_api', __name__)
 
 # Initialize API and add resources
 Api(FORECAST_BLUEPRINT).add_resource(ForecastResource, '/forecast', endpoint='forecast_create')

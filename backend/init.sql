@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS liion_battery_status (
 
 DO $$ 
 BEGIN
-    FOR i IN 1..100 LOOP
+    FOR i IN 1..1000 LOOP
         INSERT INTO liion_battery_status (
             entity_id, 
             battery_id,
@@ -44,7 +44,7 @@ BEGIN
         VALUES (
             gen_random_uuid(), -- Generates a random UUID for entity_id
             'BAT' || LPAD(i::TEXT, 1, '0'),
-            CURRENT_TIMESTAMP, -- Timestamp
+            CURRENT_TIMESTAMP - (random() * interval '30 day'), -- Timestamp
             3.7 + random() * 0.2, -- Random voltage between 3.7 and 3.9 V
             1.0 + random() * 0.5, -- Random current between 1.0 and 1.5 A
             50.0 + random() * 50.0, -- Random SOC between 50% and 100%

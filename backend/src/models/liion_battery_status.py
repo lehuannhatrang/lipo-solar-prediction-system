@@ -31,3 +31,25 @@ class LiionBatteryStatus(db.Model, BaseModel):
 
     def __repr__(self):
         return f'<LiionBatteryStatus {self.entity_id}>'
+    
+    def to_dict(self, selected_fields=None):
+        object_dict = {
+            'entity_id': str(self.entity_id),
+            'battery_id': self.battery_id,
+            'ts': self.ts.isoformat() if self.ts else None,
+            'voltage': self.voltage,
+            'current': self.current,
+            'state_of_charge': self.state_of_charge,
+            'state_of_health': self.state_of_health,
+            'temperature': self.temperature,
+            'impedance': self.impedance,
+            'charge_discharge_cycles': self.charge_discharge_cycles,
+            'energy': self.energy,
+            'cycle_time': self.cycle_time,
+            'capacity': self.capacity
+        }
+        if selected_fields:
+            # Include only the fields that are in selected_fields and are present in the object_dict
+            object_dict = {key: value for key, value in object_dict.items() if key in selected_fields}
+        
+        return object_dict
