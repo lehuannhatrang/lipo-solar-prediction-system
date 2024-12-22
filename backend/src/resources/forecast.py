@@ -13,7 +13,7 @@ class ForecastResource(Resource):
             if (APP_ENV == 'dev'):
                 if (datetime.now() - job.created_ts).seconds > 10:
                     job.status = 'Success'
-                    job.result_url = f"http://localhost:5000/api/v1/get-demo-predict-data/{job_id}"
+                    job.result_url = f"http://backend:5000/api/v1/get-demo-predict-data/{job_id}"
             return {
                 "job_id": str(job.job_id),
                 "created_by": str(job.created_by),

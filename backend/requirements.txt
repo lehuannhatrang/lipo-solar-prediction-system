@@ -1,3 +1,5 @@
 Flask
 flask_sqlalchemy
 flask_restful
+sqlalchemy
+psycopg2-binary

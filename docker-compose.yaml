@@ -4,24 +4,32 @@ services:
     image: lehuannhatrang/lipo-solar-backend:latest
     ports:
       - "8000:5000"
-    env_file:
-      - .env
+    environment:
+      ENV: 'dev'
+      API_VERSION: 'v1'
+      DB_CONNECTION_HOST: 'db'  # Use 'db' to refer to the db service in Docker
+      DB_CONNECTION_PORT: '5432'  # Default PostgreSQL port inside the container
+      DB_USERNAME: 'postgres'
+      DB_PASSWORD: 'postgres'
+      DB_DATABASE: 'prediction_core'
     depends_on:
       - db
+    restart: always
   frontend:
     build: frontend
     image: lehuannhatrang/lipo-solar-frontend:latest
     ports:
       - "8001:8501"
-    env_file:
-      - .env
+    environment:
+      API_VERSION: 'v1'
+      BACKEND_URI: 'http://backend:5000'
   db:
     image: postgres
     ports:
      - "32432:5432"
     volumes:
-       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-       - ./db_data:/var/lib/mysql
+       - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+       - ./backend/db_data:/var/lib/mysql
     restart: always
     environment:
       POSTGRES_USER: "postgres"
