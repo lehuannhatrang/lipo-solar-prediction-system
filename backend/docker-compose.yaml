@@ -4,6 +4,10 @@ services:
     image: lehuannhatrang/lipo-solar-backend:latest
     ports:
       - "8000:5000"
+    env_file:
+      - .env
+    depends_on:
+      - db
   db:
     image: postgres
     ports:

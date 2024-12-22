@@ -10,11 +10,15 @@ class RouteName(Enum):
     GET_ALL_BATTERY_ID = 'GET_ALL_BATTERY_ID'
     GET_DEVICE_FIELDS = 'GET_DEVICE_FIELDS'
     GET_DEVICE_DATA = 'GET_DEVICE_DATA'
+    GET_FORECAST = 'GET_FORECAST'
+    POST_REQUEST_FORECAST = 'POST_REQUEST_FORECAST'
 
 ROUTES = {
     "GET_ALL_BATTERY_ID": '/devices/all-ids',
     'GET_DEVICE_FIELDS': '/devices/fields',
-    'GET_DEVICE_DATA': '/device/{device_id}'
+    'GET_DEVICE_DATA': '/device/{device_id}',
+    'GET_FORECAST': '/forecast/{job_id}',
+    'POST_REQUEST_FORECAST': '/forecast'
 }
 
 def get_url(route_name, **kwargs):

@@ -9,3 +9,11 @@ DB_CONFIG = {
     "password": os.getenv('DB_PASSWORD', 'postgres'),
     'database': os.getenv('DB_DATABASE', 'prediction_core')
 }
+
+APP_ENV = os.getenv('ENV', 'dev')
+
+FORECAST_RANGE = {
+    '5_DAYS': 5,
+    '15_DAYS': 15,
+    '30_DAYS': 30
+}

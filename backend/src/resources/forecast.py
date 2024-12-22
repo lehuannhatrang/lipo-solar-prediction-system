@@ -3,12 +3,17 @@ from datetime import datetime
 from flask import request, jsonify
 from flask_restful import Resource
 from models import PredictionJob
+from config import APP_ENV
 
 class ForecastResource(Resource):
-    def get(self, jobId):
-        job = PredictionJob.query.filter_by(job_id=jobId).first()
+    def get(self, job_id):
+        job = PredictionJob.query.filter_by(job_id=job_id).first()
 
         if job:
+            if (APP_ENV == 'dev'):
+                if (datetime.now() - job.created_ts).seconds > 10:
+                    job.status = 'Success'
+                    job.result_url = f"http://localhost:5000/api/v1/get-demo-predict-data/{job_id}"
             return {
                 "job_id": str(job.job_id),
                 "created_by": str(job.created_by),
@@ -16,7 +21,9 @@ class ForecastResource(Resource):
                 "updated_ts": job.updated_ts.isoformat(),
                 "type": job.type,
                 "status": job.status,
-                "result_url": job.result_url
+                "result_url": job.result_url,
+                "job_metadata": job.job_metadata,
+                "predict_data": None
             }
         else:
             return {"message": "Job not found"}, 404
@@ -33,7 +40,8 @@ class ForecastResource(Resource):
                 updated_ts=created_ts,
                 type="forecast",
                 status="Pending",
-                result_url=None
+                result_url=None,
+                job_metadata=data
             )
             new_job.save()
             return {
@@ -44,6 +52,7 @@ class ForecastResource(Resource):
                 "updated_ts": new_job.updated_ts.isoformat(),
                 "type": new_job.type,
                 "status": new_job.status,
+                "job_metadata": data
             }, 201
         except Exception as e:
             print('ERROR')

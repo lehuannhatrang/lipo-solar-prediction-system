@@ -3,6 +3,7 @@ from datetime import datetime
 from flask import request, jsonify
 from flask_restful import Resource
 from models import LiionBatteryStatus
+from sqlalchemy import func
 
 class DeviceIdsResource(Resource):
     def get(self):
@@ -46,7 +47,11 @@ class DeviceDataResource(Resource):
         valid_fields = None
         if device_type == 'LIION_BATTERY':
             query = LiionBatteryStatus.query.filter_by(battery_id=device_id)
-            
+
+            query = query.filter(
+                func.extract('epoch', LiionBatteryStatus.ts) >= start_time,
+                func.extract('epoch', LiionBatteryStatus.ts) <= end_time
+            )            
             if data_fields:
                 valid_fields = [getattr(LiionBatteryStatus, field) for field in data_fields if hasattr(LiionBatteryStatus, field)]
                 if not valid_fields:
