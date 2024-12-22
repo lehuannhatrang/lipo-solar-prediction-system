@@ -1,0 +1,8 @@
+services:
+  frontend:
+    build: .
+    image: lehuannhatrang/lipo-solar-frontend:latest
+    ports:
+      - "8001:8501"
+    env_file:
+      - .env
