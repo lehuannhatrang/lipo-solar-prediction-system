@@ -1,8 +1,10 @@
 import streamlit as st
 import datetime
 import pandas as pd
+import random
+import matplotlib.colors as mcolors
 from utils import get_all_device_ids, get_device_data, get_device_fields
-from constants import device_type_labels, device_checkbox_labels
+from constants import device_type_labels, device_checkbox_labels, chart_colour
 
 
 st.set_page_config(layout='wide', initial_sidebar_state='expanded')
@@ -107,5 +109,8 @@ if st.session_state.query_data:
             data = pd.DataFrame(data)
             data['datetime'] = pd.to_datetime(data['ts'])
             x_axis_field = 'datetime'
-
-        st.line_chart(data, x = x_axis_field, y = y_axis_fields, height = 500, color=('#00897b'))
+        colour = chart_colour
+        if len(y_axis_fields) > len(colour):
+            colour = colour  + [mcolors.to_hex([random.random(), random.random(), random.random()]) for _ in range(len(y_axis_fields) - len(colour))]
+        color_list = colour[:len(y_axis_fields)]
+        st.line_chart(data, x = x_axis_field, y = y_axis_fields, height = 500, color=(color_list))

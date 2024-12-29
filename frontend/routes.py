@@ -24,7 +24,6 @@ ROUTES = {
 def get_url(route_name, **kwargs):
     try:
         route = ROUTES[route_name.value].format(**kwargs)
-        print(route)
         return f'{base_url}{route}'
     except Exception as e:
         print('Could not resolve route')

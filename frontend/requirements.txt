@@ -4,3 +4,4 @@ plost
 altair
 numpy
 plotly
+matplotlib

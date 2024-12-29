@@ -23,3 +23,5 @@ forecast_labels = {
 }
 
 forecast_predict_fields = ['state_of_charge', 'state_of_health']
+
+chart_colour = [ "#00897b", "#1de9b6" , "#80cbc4", "#a7f2d2", "#236052", "#2a7b5e"]
