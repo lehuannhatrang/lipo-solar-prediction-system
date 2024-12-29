@@ -41,7 +41,7 @@ class DeviceFieldsResource(Resource):
         elif device_type == 'SOLAR_PANEL':
             # Get all columns from the LiionBatteryStatus model
             all_columns = [column.name for column in SolarPanelBatteryStatus.__table__.columns]
-            
+            print(all_columns)
             return {'device_data': all_columns}, 200
         
         else:
