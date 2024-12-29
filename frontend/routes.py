@@ -18,7 +18,7 @@ ROUTES = {
     'GET_DEVICE_FIELDS': '/devices/fields',
     'GET_DEVICE_DATA': '/device/{device_id}',
     'GET_FORECAST': '/forecast/{job_id}',
-    'POST_REQUEST_FORECAST': '/forecast'
+    'POST_REQUEST_FORECAST': '/forecast-request'
 }
 
 def get_url(route_name, **kwargs):

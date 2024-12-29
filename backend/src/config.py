@@ -11,6 +11,7 @@ DB_CONFIG = {
 }
 
 APP_ENV = os.getenv('ENV', 'dev')
+BACKEND_HOST = os.getenv('BACKEND_HOST', 'backend')
 
 FORECAST_RANGE = {
     '5_DAYS': 5,

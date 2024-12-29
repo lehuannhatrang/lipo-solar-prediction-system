@@ -114,7 +114,7 @@ if  st.session_state.predict_data:
             y=combined_data[predict_field],  # Replace 'predict_field' with the actual field name
             mode='lines',
             name=predict_field,
-            line=dict(dash='solid')
+            line=dict(color="#00897b", dash='solid')
         ))
 
         fig.add_trace(go.Scatter(

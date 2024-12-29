@@ -1,11 +1,12 @@
-import uuid
+from flasgger import swag_from
 from datetime import datetime, timedelta
 from flask import request, jsonify
 from flask_restful import Resource
-from models import PredictionJob, LiionBatteryStatus
+from models import PredictionJob, LiionBatteryStatus, SolarPanelBatteryStatus
 from config import FORECAST_RANGE
 
 class DemoForecastResource(Resource):
+    # @swag_from("../swagger/demo-forecast/GET.yml")
     def get(self, job_id):
         job = PredictionJob.query.filter_by(job_id=job_id).first()
 
@@ -15,9 +16,11 @@ class DemoForecastResource(Resource):
             predict_field = job_metadata['predict_field']
             forecast_range = job_metadata["forecast_range"]
             forecast_days = FORECAST_RANGE[forecast_range]
+            if job_metadata['device_type'] == 'LIION_BATTERY':
+                query = LiionBatteryStatus.query.filter_by(battery_id=device_id)
+            elif job_metadata['device_type'] == 'SOLAR_PANEL':
+                query = SolarPanelBatteryStatus.query.filter_by(panel_id=device_id)
 
-            query = LiionBatteryStatus.query.filter_by(battery_id=device_id)
-            
             query_all = query.all()
 
             device_data = [device.to_dict([predict_field, 'ts']) for device in query_all]

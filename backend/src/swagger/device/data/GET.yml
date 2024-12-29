@@ -1,0 +1,45 @@
+Return device status in a range of time
+---
+tags:
+  - Device Status
+parameters:
+  - name: device_id
+    in: path
+    type: string
+    description: Device Id
+  - name: device_type
+    in: query
+    type: string
+    enum:
+      - LIION_BATTERY
+      - SOLAR_PANEL
+    description: Device type
+  - name: data_fields
+    in: query
+    type: string
+    description: Query Fields
+    example: 
+      - state_of_charge
+      - state_of_health
+  - name: start_time
+    in: query
+    type: float
+    description: Start time
+    example: 1735453454332
+  - name: end_time
+    in: query
+    type: float
+    description: End time
+    example: 1735455454332
+responses:
+  200:
+    description: Device Status in Time range with query fields
+    schema:
+      example:
+        device_id: BAT1
+        data:
+          - ts: "2024-12-22T07:14:04.312738"
+            state_of_health: 83.38218814959032
+          - ts: "2024-12-18T21:43:31.797217"
+            state_of_health: 98.5959035776797
+

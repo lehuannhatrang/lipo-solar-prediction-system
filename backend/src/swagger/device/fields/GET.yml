@@ -1,0 +1,23 @@
+Return all available fields from device type
+---
+tags:
+  - Device All Fields
+parameters:
+  - name: device_type
+    in: query
+    type: string
+    enum:
+      - LIION_BATTERY
+      - SOLAR_PANEL
+    description: Device type
+responses:
+  200:
+    description: All available fields
+    schema:
+      example:
+        device_data:
+          - battery_id
+          - ts
+          - state_of_charge
+          - state_of_health
+          - temperature

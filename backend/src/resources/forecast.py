@@ -1,11 +1,13 @@
 import uuid
 from datetime import datetime
+from flasgger import swag_from
 from flask import request, jsonify
 from flask_restful import Resource
 from models import PredictionJob
-from config import APP_ENV
+from config import APP_ENV, BACKEND_HOST
 
 class ForecastResource(Resource):
+    @swag_from("../swagger/forecast/GET.yml")
     def get(self, job_id):
         job = PredictionJob.query.filter_by(job_id=job_id).first()
 
@@ -13,7 +15,7 @@ class ForecastResource(Resource):
             if (APP_ENV == 'dev'):
                 if (datetime.now() - job.created_ts).seconds > 10:
                     job.status = 'Success'
-                    job.result_url = f"http://backend:5000/api/v1/get-demo-predict-data/{job_id}"
+                    job.result_url = f"http://{BACKEND_HOST}:5000/api/v1/get-demo-predict-data/{job_id}"
             return {
                 "job_id": str(job.job_id),
                 "created_by": str(job.created_by),
@@ -28,6 +30,7 @@ class ForecastResource(Resource):
         else:
             return {"message": "Job not found"}, 404
         
+    @swag_from("../swagger/forecast-request/POST.yml")
     def post(self):
         try:
             data = request.get_json()

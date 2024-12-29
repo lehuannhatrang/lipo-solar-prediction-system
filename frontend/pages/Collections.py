@@ -108,4 +108,4 @@ if st.session_state.query_data:
             data['datetime'] = pd.to_datetime(data['ts'])
             x_axis_field = 'datetime'
 
-        st.line_chart(data, x = x_axis_field, y = y_axis_fields, height = 500)
+        st.line_chart(data, x = x_axis_field, y = y_axis_fields, height = 500, color=('#00897b'))

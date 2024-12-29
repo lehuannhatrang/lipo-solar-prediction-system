@@ -1,0 +1,22 @@
+Return all device ids from device type
+---
+tags:
+  - Device All IDs
+parameters:
+  - name: device_type
+    in: query
+    type: string
+    enum:
+      - LIION_BATTERY
+      - SOLAR_PANEL
+    description: Device type
+responses:
+  200:
+    description: All device ids
+    schema:
+      example:
+        device_ids:
+          - BAT1
+          - BAT2
+          - BAT3
+          - BAT4

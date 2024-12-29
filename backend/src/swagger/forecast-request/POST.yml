@@ -1,0 +1,45 @@
+Request Forecast
+---
+tags:
+  - Request Forecast
+parameters:
+  - name: device_type
+    in: body
+    type: string
+    enum:
+      - LIION_BATTERY
+      - SOLAR_PANEL
+    description: Device type
+    example: "LIION_BATTERY"
+  - name: device_id
+    in: body
+    type: string
+    description: Device ID
+    example: "BAT1"
+  - name: predict_field
+    in: body
+    type: string
+    description: Field to predict
+    example: "state_of_charge"
+  - name: forecast_range
+    in: body
+    type: string
+    enum:
+      - 5_DAYS
+      - 15_DAYS
+      - 30_DAYS
+    description: Predict range of time
+    example: "5_DAYS"
+responses:
+  200:
+    description: Forecast Job Status
+    schema:
+      example:
+        message: "Prediction job created successfully"
+        job_id: "0a1ff057-4249-44e4-a98a-b323bd51198e"
+        created_by: "02cc3a17-4633-14a2-a2dd-b3891e52118a"
+        created_ts: new_job.created_ts.isoformat()
+        updated_ts: new_job.updated_ts.isoformat()
+        type: new_job.type
+        status: new_job.status
+        job_metadata: data

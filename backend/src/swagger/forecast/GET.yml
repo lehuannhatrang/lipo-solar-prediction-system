@@ -1,0 +1,27 @@
+Return Forecast Job status
+---
+tags:
+  - Forecast Job status
+parameters:
+  - name: job_id
+    in: path
+    type: string
+    description: Job ID
+responses:
+  200:
+    description: Forecast Job Status
+    schema:
+      example:
+        job_id: "aa53990b-36c0-4360-b6b8-7b4d155bd411"
+        created_by: "d15888d1-ddc5-4feb-9165-0c2383bde1a0"
+        created_ts: "2024-12-29T16:03:23.295366"
+        updated_ts: "2024-12-29T16:03:23.295366"
+        type: "forecast"
+        status: "Success"
+        result_url: "http://localhost:5000/api/v1/get-demo-predict-data/aa53990b-36c0-4360-b6b8-7b4d155bd411"
+        job_metadata:
+          device_type: "LIION_BATTERY"
+          device_id: "BAT1"
+          predict_field: "state_of_charge"
+          forecast_range: "5_DAYS"
+        predict_data: null
