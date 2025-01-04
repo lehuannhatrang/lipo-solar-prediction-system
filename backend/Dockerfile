@@ -6,7 +6,10 @@ RUN apk update
 
 # Defining working directory and adding source code
 WORKDIR /usr/src/app
+
 COPY .env bootstrap.sh requirements.txt  ./
+RUN chmod +x /usr/src/app/bootstrap.sh
+
 COPY src ./src
 
 # Install API dependencies
