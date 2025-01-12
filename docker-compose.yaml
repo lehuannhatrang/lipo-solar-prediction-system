@@ -4,18 +4,18 @@ services:
     image: lehuannhatrang/lipo-solar-backend:latest
     ports:
       - "8000:5000"
-    environment:
-      ENV: 'dev'
-      API_VERSION: 'v1'
-      DB_CONNECTION_HOST: 'db'  # Use 'db' to refer to the db service in Docker
-      DB_CONNECTION_PORT: '5432'  # Default PostgreSQL port inside the container
-      DB_USERNAME: 'postgres'
-      DB_PASSWORD: 'postgres'
-      DB_DATABASE: 'prediction_core'
-      REDIS_HOST: 'redis'
-      REDIS_PORT: '6379'
+    command: flask
+    env_file:
+      - backend/prod.env
     depends_on:
       - db
+    restart: always
+  celery-worker:
+    build: backend
+    command: worker
+    env_file:
+      - backend/prod.env
+    depends_on:
       - redis
     restart: always
   frontend:
@@ -23,9 +23,9 @@ services:
     image: lehuannhatrang/lipo-solar-frontend:latest
     ports:
       - "8001:8501"
-    environment:
-      API_VERSION: 'v1'
-      BACKEND_URI: 'http://backend:5000'
+    env_file:
+      - frontend/prod.env
+    restart: always
   db:
     image: postgres
     ports:

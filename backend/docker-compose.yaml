@@ -4,6 +4,7 @@ services:
     image: lehuannhatrang/lipo-solar-backend:latest
     ports:
       - "8000:5000"
+    command: /usr/src/app/bootstrap.sh flask
     env_file:
       - .env
     depends_on:

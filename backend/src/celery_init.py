@@ -6,6 +6,7 @@ import requests
 
 REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
 REDIS_PORT = os.getenv("REDIS_PORT", '6379')
+BACKEND_HOST = os.getenv('BACKEND_HOST', 'localhost')
 
 def celery_init_app(app: Flask) -> Celery:
     class FlaskTask(Task):
@@ -38,6 +39,6 @@ celery_app = flask_app.extensions["celery"]
 @shared_task(ignore_result=False)
 def forecast_async() -> int:
     time.sleep(5)
-    forecast_endpoint = f'http://localhost:5000/api/v1/get-demo-predict-data/{forecast_async.request.id}'
+    forecast_endpoint = f'http://{BACKEND_HOST}:5000/api/v1/get-demo-predict-data/{forecast_async.request.id}'
     predict_data = requests.get(forecast_endpoint).json()
     return predict_data

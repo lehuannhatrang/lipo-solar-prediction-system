@@ -49,6 +49,7 @@ def get_forecast_data(job_id):
     return response
 
 def create_year_heatmap(data, start_date, end_date):
+    # Convert input dates to datetime objects
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
     
@@ -58,31 +59,36 @@ def create_year_heatmap(data, start_date, end_date):
     data['Day'] = data['Date'].dt.day
     data['Weekday'] = data['Date'].dt.weekday  # 0=Monday, 6=Sunday
     data['Week'] = data['Date'].dt.isocalendar().week  # Week number
+    data['ISO_Year'] = data['Date'].dt.isocalendar().year  # ISO Year
     
     # Filter data to only include the selected time range
     data = data[(data['Date'] >= start_date) & (data['Date'] <= end_date)]
 
-    # Calculate the start and end week numbers
-    start_week = start_date.isocalendar()[1]
-    end_week = end_date.isocalendar()[1]
+    # Generate a consistent week index across year boundaries
+    min_iso_year = data['ISO_Year'].min()
+    data['Week_Index'] = (data['ISO_Year'] - min_iso_year) * 53 + data['Week']
+    
+    # Calculate start and end week indices
+    start_week_index = ((start_date.isocalendar().year - min_iso_year) * 53 +
+                        start_date.isocalendar()[1])
+    end_week_index = ((end_date.isocalendar().year - min_iso_year) * 53 +
+                      end_date.isocalendar()[1])
 
     # Create a matrix for the year, where rows represent days of the week and columns represent weeks
-    max_weeks = 53  # Maximum number of weeks in a year
+    max_weeks = end_week_index - start_week_index + 1  # Range of weeks to include
     week_matrix = np.zeros((7, max_weeks))  # 7 rows (days of the week), max_weeks columns
 
     # Populate the matrix with anomaly scores
     for _, row in data.iterrows():
-        week_of_year = row['Week'] - 1  # Week number (0-based indexing)
+        week_of_year = row['Week_Index'] - start_week_index  # Adjust to 0-based index
         day_of_week = row['Weekday']  # 0=Monday, 6=Sunday
         week_matrix[day_of_week, week_of_year] = row['Anomaly Score']
 
-    # Trim any extra weeks if the year doesn't have 53 weeks
-    week_matrix = week_matrix[:, start_week-1:end_week]  # Trim to the selected weeks range
-
     # Define the range of weeks that need to be displayed (only weeks within the selected range)
-    weeks_in_range = list(range(start_week, end_week + 1))
+    weeks_in_range = list(range(start_week_index, end_week_index + 1))
 
     # Calculate the starting date of each week
-    week_start_dates = [start_date + timedelta(weeks=week-weeks_in_range[0], days=-start_date.weekday()) for week in weeks_in_range]
+    week_start_dates = [start_date + timedelta(weeks=week - weeks_in_range[0],
+                                               days=-start_date.weekday()) for week in weeks_in_range]
 
     return week_matrix, week_start_dates, data
