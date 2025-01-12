@@ -18,3 +18,4 @@ FORECAST_RANGE = {
     '15_DAYS': 15,
     '30_DAYS': 30
 }
+

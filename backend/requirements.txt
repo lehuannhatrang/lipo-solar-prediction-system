@@ -4,3 +4,5 @@ flask_restful
 sqlalchemy
 psycopg2-binary
 flasgger
+celery
+redis

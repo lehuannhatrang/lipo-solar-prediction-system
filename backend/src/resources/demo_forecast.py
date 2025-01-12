@@ -6,7 +6,6 @@ from models import PredictionJob, LiionBatteryStatus, SolarPanelBatteryStatus
 from config import FORECAST_RANGE
 
 class DemoForecastResource(Resource):
-    # @swag_from("../swagger/demo-forecast/GET.yml")
     def get(self, job_id):
         job = PredictionJob.query.filter_by(job_id=job_id).first()
 

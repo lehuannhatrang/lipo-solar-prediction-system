@@ -1,21 +1,26 @@
-import uuid
 from datetime import datetime
 from flasgger import swag_from
 from flask import request, jsonify
 from flask_restful import Resource
 from models import PredictionJob
 from config import APP_ENV, BACKEND_HOST
+from celery_init import forecast_async
+from celery.result import AsyncResult
 
 class ForecastResource(Resource):
     @swag_from("../swagger/forecast/GET.yml")
     def get(self, job_id):
         job = PredictionJob.query.filter_by(job_id=job_id).first()
-
         if job:
-            if (APP_ENV == 'dev'):
-                if (datetime.now() - job.created_ts).seconds > 10:
+            result = AsyncResult(job_id)
+            job.predict_data = None
+            if job.status != 'Success':
+                if result.ready():
+                    job.predict_data = result.result
                     job.status = 'Success'
-                    job.result_url = f"http://{BACKEND_HOST}:5000/api/v1/get-demo-predict-data/{job_id}"
+
+            job.save()
+            
             return {
                 "job_id": str(job.job_id),
                 "created_by": str(job.created_by),
@@ -25,7 +30,7 @@ class ForecastResource(Resource):
                 "status": job.status,
                 "result_url": job.result_url,
                 "job_metadata": job.job_metadata,
-                "predict_data": None
+                "predict_data": job.predict_data
             }
         else:
             return {"message": "Job not found"}, 404
@@ -34,7 +39,8 @@ class ForecastResource(Resource):
     def post(self):
         try:
             data = request.get_json()
-            job_id = str(uuid.uuid4())
+            job = forecast_async.apply_async()
+            job_id = job.id
             created_ts = datetime.now()
             new_job = PredictionJob(
                 job_id=job_id,

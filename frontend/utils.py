@@ -43,15 +43,12 @@ def request_forecast(device_type, device_id, predict_field, forecast_range):
 def get_forecast_data(job_id):
     for i in range(0, 12):
         response = requests.get(get_url(RouteName.GET_FORECAST, job_id=job_id)).json()
-        if response['result_url']:
-            predict_data = requests.get(response['result_url']).json()
-            response["predict_data"] = predict_data
+        if response["predict_data"]:
             break
         time.sleep(5)
     return response
 
 def create_year_heatmap(data, start_date, end_date):
-    # Convert start_date and end_date to datetime64[ns]
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
     

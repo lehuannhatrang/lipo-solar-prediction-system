@@ -33,15 +33,11 @@ class DeviceFieldsResource(Resource):
         device_type = request.args.get('device_type')
         
         if device_type == 'LIION_BATTERY':
-            # Get all columns from the LiionBatteryStatus model
             all_columns = [column.name for column in LiionBatteryStatus.__table__.columns]
-            
             return {'device_data': all_columns}, 200
         
         elif device_type == 'SOLAR_PANEL':
-            # Get all columns from the LiionBatteryStatus model
             all_columns = [column.name for column in SolarPanelBatteryStatus.__table__.columns]
-            print(all_columns)
             return {'device_data': all_columns}, 200
         
         else:

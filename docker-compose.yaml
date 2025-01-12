@@ -12,8 +12,11 @@ services:
       DB_USERNAME: 'postgres'
       DB_PASSWORD: 'postgres'
       DB_DATABASE: 'prediction_core'
+      REDIS_HOST: 'redis'
+      REDIS_PORT: '6379'
     depends_on:
       - db
+      - redis
     restart: always
   frontend:
     build: frontend
@@ -34,3 +37,9 @@ services:
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    restart: always
+  

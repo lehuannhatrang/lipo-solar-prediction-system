@@ -1,32 +1,46 @@
-# Use an official Python runtime as a parent image
-FROM python:3.8-slim
+# # Use an official Python runtime as a parent image
+# FROM python:3.8-slim
 
-# Set environment variables for SageMaker paths
-ENV PYTHONUNBUFFERED=TRUE
-ENV PATH="/opt/program:${PATH}"
-ENV PYTHONPATH="/opt/program:${PYTHONPATH}"
+# # Set environment variables for SageMaker paths
+# ENV PYTHONUNBUFFERED=TRUE
+# ENV PATH="/opt/program:${PATH}"
+# ENV PYTHONPATH="/opt/program:${PYTHONPATH}"
 
-# Set the working directory inside the container
-WORKDIR /opt/program
+# # Set the working directory inside the container
+# WORKDIR /opt/program
 
-# Install any required system dependencies
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    build-essential && \
-    rm -rf /var/lib/apt/lists/*
+# # Install any required system dependencies
+# RUN apt-get update && \
+#     apt-get install -y --no-install-recommends \
+#     build-essential && \
+#     rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
+# # Install Python dependencies
+# COPY requirements.txt .
+# RUN pip install -r requirements.txt
+
+# # Copy your inference script and other necessary files into the container
+# COPY inference.py /opt/program/inference.py
+
+# # Create the directory for model artifacts
+# RUN mkdir -p /opt/ml/model
+# COPY model/model.pkl /opt/ml/model/model.pkl
+
+# # Expose the port used by the Flask app (if using Flask)
+# EXPOSE 8080
+
+# # Set the entry point script for SageMaker Inference
+# ENTRYPOINT ["python", "inference.py"]
+
+FROM python:3.10.4
+
+WORKDIR /app
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy your inference script and other necessary files into the container
-COPY inference.py /opt/program/inference.py
+COPY . .
 
-# Create the directory for model artifacts
-RUN mkdir -p /opt/ml/model
+ENV SM_MODEL_DIR /opt/ml/model
 
-# Expose the port used by the Flask app (if using Flask)
-EXPOSE 8080
-
-# Set the entry point script for SageMaker Inference
-ENTRYPOINT ["python", "inference.py"]
+ENTRYPOINT ["gunicorn", "-b", "0.0.0.0:8080", "inference:app", "-n"]
