@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
-from utils import get_all_device_ids, create_year_heatmap, get_forecast_data
+from authentication import check_authenticate
+from components.user_profile.index import user_profile
+from utils import get_all_device_ids, create_year_heatmap, get_forecast_data, render_sidebar_navigation
 from constants import device_type_labels, device_checkbox_labels, forecast_predict_fields, forecast_labels
 import calendar
 import plotly.express as px
@@ -8,12 +10,17 @@ from datetime import datetime, timedelta
 import numpy as np
 import plotly.graph_objects as go
 
-
 st.set_page_config(layout='wide', initial_sidebar_state='expanded')
+
+check_authenticate()
+
+render_sidebar_navigation()
 
 with open('style.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
-    
+
+user_profile()
+
 st.sidebar.header('Anomaly Detection')
 
 if 'predict_data' not in st.session_state:

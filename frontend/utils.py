@@ -1,22 +1,31 @@
-import requests
 import time
+import streamlit as st
+from authentication import AuthenRequest
 from routes import RouteName, get_url
 import pandas as pd
 from datetime import timedelta
 import numpy as np
 
+auth_request = AuthenRequest()
+
 def get_all_device_ids(device_type):
     params = {
         'device_type': device_type
     }
-    response = requests.get(get_url(RouteName.GET_ALL_BATTERY_ID), params=params)
+    response = auth_request.get(get_url(RouteName.GET_ALL_BATTERY_ID), params=params)
     return response.json()['device_ids']
+
+def render_sidebar_navigation():
+    st.sidebar.page_link('Homepage.py', label='Home')
+    st.sidebar.page_link('pages/Collections.py', label='Collections')
+    st.sidebar.page_link('pages/Forecast.py', label='Forecast')
+    st.sidebar.page_link('pages/Anomaly_Detection.py', label='Anomally Detection')
 
 def get_device_fields(device_type):
     params = {
         'device_type': device_type
     }
-    response = requests.get(get_url(RouteName.GET_DEVICE_FIELDS), params=params)
+    response = auth_request.get(get_url(RouteName.GET_DEVICE_FIELDS), params=params)
     return response.json()['device_data']
 
 
@@ -27,7 +36,7 @@ def get_device_data(device_type, device_id, data_fields, start_time, end_time):
         'start_time': start_time,
         'end_time': end_time
     }
-    response = requests.get(get_url(RouteName.GET_DEVICE_DATA, device_id=device_id), params=params)
+    response = auth_request.get(get_url(RouteName.GET_DEVICE_DATA, device_id=device_id), params=params)
     return response.json()
 
 def request_forecast(device_type, device_id, predict_field, forecast_range):
@@ -37,12 +46,12 @@ def request_forecast(device_type, device_id, predict_field, forecast_range):
         'predict_field': predict_field,
         'forecast_range': forecast_range
     }
-    response = requests.post(get_url(RouteName.POST_REQUEST_FORECAST), json=body)
+    response = auth_request.post(get_url(RouteName.POST_REQUEST_FORECAST), json=body)
     return response.json()
 
 def get_forecast_data(job_id):
     for i in range(0, 12):
-        response = requests.get(get_url(RouteName.GET_FORECAST, job_id=job_id)).json()
+        response = auth_request.get(get_url(RouteName.GET_FORECAST, job_id=job_id)).json()
         if response["predict_data"]:
             break
         time.sleep(5)

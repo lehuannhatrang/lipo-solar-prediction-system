@@ -3,15 +3,22 @@ import datetime
 import pandas as pd
 import random
 import matplotlib.colors as mcolors
-from utils import get_all_device_ids, get_device_data, get_device_fields
+from authentication import check_authenticate
+from components.user_profile.index import user_profile
+from utils import get_all_device_ids, get_device_data, get_device_fields, render_sidebar_navigation
 from constants import device_type_labels, device_checkbox_labels, chart_colour
 
-
 st.set_page_config(layout='wide', initial_sidebar_state='expanded')
+
+check_authenticate()
+
+render_sidebar_navigation()
 
 with open('style.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
     
+user_profile()
+
 st.sidebar.header('Collections')
 
 if 'query_data' not in st.session_state:

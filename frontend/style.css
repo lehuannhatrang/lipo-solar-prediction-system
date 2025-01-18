@@ -92,3 +92,42 @@ div[data-baseweb="select"] .st-bm {
 div[data-baseweb="popover"] li {
     color: #004d40;
 }
+
+/* Profile icon container */
+.profile-icon-container {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+}
+
+/* Dropdown menu */
+.profile-icon-container:hover .dropdown-menu {
+    display: block; /* Show dropdown when hovering over the container */
+}
+
+.dropdown-menu {
+    display: none; /* Hidden by default */
+    position: absolute;
+    top: 50px; /* Adjust below the button */
+    right: 0px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    z-index: 1001;
+    width: 300px; /* Adjust width as needed */
+}
+
+/* Dropdown item */
+.dropdown-item {
+    margin: 5px 0;
+    padding: 8px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f0f0;
+}
