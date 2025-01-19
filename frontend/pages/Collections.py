@@ -1,4 +1,6 @@
 import streamlit as st
+st.set_page_config(layout='wide', initial_sidebar_state='expanded')
+
 import datetime
 import pandas as pd
 import random
@@ -8,7 +10,6 @@ from components.user_profile.index import user_profile
 from utils import get_all_device_ids, get_device_data, get_device_fields, render_sidebar_navigation
 from constants import device_type_labels, device_checkbox_labels, chart_colour
 
-st.set_page_config(layout='wide', initial_sidebar_state='expanded')
 
 check_authenticate()
 
@@ -112,12 +113,17 @@ if st.session_state.query_data:
     # Row C
     if device_data:
         data = device_data['data']
-        if x_axis_field == 'ts':
-            data = pd.DataFrame(data)
-            data['datetime'] = pd.to_datetime(data['ts'])
-            x_axis_field = 'datetime'
-        colour = chart_colour
-        if len(y_axis_fields) > len(colour):
-            colour = colour  + [mcolors.to_hex([random.random(), random.random(), random.random()]) for _ in range(len(y_axis_fields) - len(colour))]
-        color_list = colour[:len(y_axis_fields)]
-        st.line_chart(data, x = x_axis_field, y = y_axis_fields, height = 500, color=(color_list))
+        if len(data) > 0:
+            if x_axis_field == 'ts':
+                data = pd.DataFrame(data)
+                data['datetime'] = pd.to_datetime(data['ts'])
+                x_axis_field = 'datetime'
+            colour = chart_colour
+            if len(y_axis_fields) > len(colour):
+                colour = colour  + [mcolors.to_hex([random.random(), random.random(), random.random()]) for _ in range(len(y_axis_fields) - len(colour))]
+            color_list = colour[:len(y_axis_fields)]
+            st.line_chart(data, x = x_axis_field, y = y_axis_fields, height = 500, color=(color_list))
+        else:
+            st.image("gallery/images/data_not_found.jpg", width=800)
+else:
+    st.markdown('Please select query parameters and press Update')

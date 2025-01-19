@@ -1,17 +1,18 @@
 import streamlit as st
-from authentication import AuthenRequest, check_authenticate
+st.set_page_config(layout='wide', initial_sidebar_state='expanded')
+
+from authentication import check_authenticate
 from components.user_profile.index import user_profile
 from utils import render_sidebar_navigation
-st.set_page_config(layout='wide', initial_sidebar_state='expanded')
 
 check_authenticate()
 
-render_sidebar_navigation()
     
 with open('style.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
     
 user_profile()
+render_sidebar_navigation()
 
 # Row A
 st.markdown('## Dashboards')

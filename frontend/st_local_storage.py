@@ -34,7 +34,7 @@ class StLocalStorage:
             result = st_js(code, key=st.session_state["_ls_unique_keys"][key])
             time.sleep(0.3)
         if result and result[0]:
-            result_val = json.loads(result[0])
+            result_val = result[0]
             st.session_state[key] = result_val
             return result_val
         return None
@@ -42,14 +42,15 @@ class StLocalStorage:
     def __setitem__(self, key: str, value: Any) -> None:
         if "_ls_unique_keys" not in st.session_state:
             st.session_state["_ls_unique_keys"] = {}
-        value = json.dumps(value, ensure_ascii=False)
+        value_json = json.dumps(value, ensure_ascii=False)
         st.session_state["_ls_unique_keys"][key] = str(uuid.uuid4())
         code = f"""
         console.log('setting {key} to local storage');
-        localStorage.setItem('{KEY_PREFIX + key}', JSON.stringify('{value}'));
+        localStorage.setItem('{KEY_PREFIX + key}', JSON.stringify({value_json}));
         """
         try:
             with self._container:
+                st.session_state[key] = value
                 return st_js(code, key=st.session_state["_ls_unique_keys"][key] + "_set")
         except Exception as e:
             print('Err: ', e)
@@ -58,6 +59,7 @@ class StLocalStorage:
         st.session_state["_ls_unique_keys"][key] = str(uuid.uuid4())
         code = f"localStorage.removeItem('{KEY_PREFIX + key}');"
         with self._container:
+            st.session_state.pop(key, None)
             return st_js(code, key=st.session_state["_ls_unique_keys"][key] + "_del")
 
     def __contains__(self, key: str) -> bool:
@@ -75,6 +77,13 @@ class StLocalStorage:
     def set(self, key: str, value: Any) -> None:
         try:
             self.__setitem__(key, value)
+        except Exception as e:
+            print(e)
+            return None
+    
+    def delete(self, key: str) -> None:
+        try:
+            self.__delitem__(key)
         except Exception as e:
             print(e)
             return None

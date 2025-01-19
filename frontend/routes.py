@@ -36,9 +36,13 @@ def get_url(route_name, **kwargs):
 
 class VEEVRouteName(Enum):
     GET_USER_INFO = 'GET_USER_INFO'
+    POST_RENEW_TOKEN = 'POST_RENEW_TOKEN'
+    POST_LOG_OUT = 'POST_LOG_OUT'
 
 VEEV_ROUTES = {
     "GET_USER_INFO": '/user/{user_id}',
+    "POST_RENEW_TOKEN": '/auth/token',
+    "POST_LOG_OUT": '/auth/logout'
 }
 
 veev_base_url = f'{VEEV_URL}/api'

@@ -1,4 +1,6 @@
 import streamlit as st
+st.set_page_config(layout='wide', initial_sidebar_state='expanded')
+
 import datetime
 import pandas as pd
 from authentication import check_authenticate
@@ -7,7 +9,6 @@ from utils import get_all_device_ids, render_sidebar_navigation, request_forecas
 from constants import device_type_labels, device_checkbox_labels, forecast_predict_fields, forecast_labels
 import plotly.graph_objects as go
 
-st.set_page_config(layout='wide', initial_sidebar_state='expanded')
 
 check_authenticate()
 
@@ -137,3 +138,5 @@ if  st.session_state.predict_data:
 
         # Display the figure in Streamlit
         st.plotly_chart(fig)
+else:
+    st.markdown('Please select Forecast parameters and press Update')

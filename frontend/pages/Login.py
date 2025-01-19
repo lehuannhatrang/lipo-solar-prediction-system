@@ -20,7 +20,7 @@ def authenticate(username, password):
     try:
         response = requests.post(url, json=payload)
         response.raise_for_status()
-        return response.json()  # Returns token and refreshToken
+        return response.json()
     except requests.exceptions.RequestException as e:
         st.error("Login failed")
         return None
@@ -33,8 +33,8 @@ def login_page():
     
     # Create a login form
     with st.form("login_form"):
-        username = st.text_input("Username", "thanhadmin@test.com")
-        password = st.text_input("Password", "123456",type="password")
+        username = st.text_input("Username")
+        password = st.text_input("Password",type="password")
         submit = st.form_submit_button("Log In")
     token = None
     refreshToken = None

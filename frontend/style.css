@@ -96,8 +96,8 @@ div[data-baseweb="popover"] li {
 /* Profile icon container */
 .profile-icon-container {
     position: fixed;
-    top: 10px;
-    right: 10px;
+    top: 40px;
+    right: 40px;
     z-index: 1000;
 }
 

@@ -1,4 +1,6 @@
 import streamlit as st
+st.set_page_config(layout='wide', initial_sidebar_state='expanded')
+
 import pandas as pd
 from authentication import check_authenticate
 from components.user_profile.index import user_profile
@@ -10,7 +12,6 @@ from datetime import datetime, timedelta
 import numpy as np
 import plotly.graph_objects as go
 
-st.set_page_config(layout='wide', initial_sidebar_state='expanded')
 
 check_authenticate()
 

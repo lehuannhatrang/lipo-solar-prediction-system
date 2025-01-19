@@ -3,7 +3,9 @@ import streamlit as st
 import requests
 from routes import VEEVRouteName, get_veev_url
 from st_local_storage import StLocalStorage
+from datetime import datetime
 import jwt
+import time
 
 def check_authenticate():
     if 'st_ls' not in globals():
@@ -15,6 +17,7 @@ def check_authenticate():
     return True
 
 class AuthenRequest:
+    is_renewing_token = False
     def __init__(self):
         """
         Initialize the AuthenRequest class.
@@ -33,6 +36,22 @@ class AuthenRequest:
         if not token:
             st.error("Token not found in local storage. Please log in.")
             raise ValueError("Token is missing")
+        
+        jwt_decode = jwt.decode(token, options={"verify_signature": False})
+        expire_timestamp = jwt_decode['exp'] 
+        current_timestamp = datetime.now().timestamp()
+        if expire_timestamp < current_timestamp:
+            if self.is_renewing_token:
+                time.sleep(1)
+            else:
+                self.is_renewing_token = True
+                try:
+                    self.renew_token()
+                    self.is_renewing_token = False
+                except Exception as e:
+                    self.is_renewing_token = False
+            token = self.local_storage_handler.get('token', cached=False)
+        
         return {"x-authorization": f"Bearer {token}"}
 
     def request(self, method: str, url: str, **kwargs) -> requests.Response:
@@ -65,6 +84,21 @@ class AuthenRequest:
     def patch(self, url: str, data: Optional[Any] = None, **kwargs) -> requests.Response:
         return self.request("PATCH", url, data=data, **kwargs)
     
+    def renew_token(self):
+        try:
+            refresh_token = self.local_storage_handler.get('refreshToken')
+            request_body = {
+                "refreshToken": refresh_token
+            }
+            response = requests.request('POST', get_veev_url(VEEVRouteName.POST_RENEW_TOKEN), json=request_body)
+            response_val = response.json()
+            if "token" in response_val and "refreshToken" in response_val:
+                self.local_storage_handler.set("token", response_val['token'])
+                self.local_storage_handler.set("refreshToken", response_val['refreshToken'])
+        except Exception as e:
+            self.local_storage_handler.delete('token')
+            self.local_storage_handler.delete('refreshToken')
+
     def get_user_info(self, cached=True):
         if cached and 'user_info' in st.session_state:
             return st.session_state['user_info']
@@ -75,3 +109,9 @@ class AuthenRequest:
         user_info = response.json()
         st.session_state['user_info'] = user_info
         return user_info
+
+    def log_out(self):
+        response = self.request('POST',get_veev_url(VEEVRouteName.POST_LOG_OUT))
+        self.local_storage_handler.delete('token')
+        self.local_storage_handler.delete('refreshToken')
+        time.sleep(0.5)
