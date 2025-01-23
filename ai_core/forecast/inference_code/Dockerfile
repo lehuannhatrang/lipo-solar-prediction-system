@@ -1,46 +1,23 @@
-# # Use an official Python runtime as a parent image
-# FROM python:3.8-slim
+FROM python:3.8
 
-# # Set environment variables for SageMaker paths
-# ENV PYTHONUNBUFFERED=TRUE
-# ENV PATH="/opt/program:${PATH}"
-# ENV PYTHONPATH="/opt/program:${PYTHONPATH}"
+RUN apt-get -y update && apt-get install -y --no-install-recommends \
+         wget \
+         python3 \
+         nginx \
+         ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
-# # Set the working directory inside the container
-# WORKDIR /opt/program
+RUN wget https://bootstrap.pypa.io/get-pip.py && python3 get-pip.py && \
+    pip install flask gevent gunicorn && \
+        rm -rf /root/.cache
 
-# # Install any required system dependencies
-# RUN apt-get update && \
-#     apt-get install -y --no-install-recommends \
-#     build-essential && \
-#     rm -rf /var/lib/apt/lists/*
-
-# # Install Python dependencies
-# COPY requirements.txt .
-# RUN pip install -r requirements.txt
-
-# # Copy your inference script and other necessary files into the container
-# COPY inference.py /opt/program/inference.py
-
-# # Create the directory for model artifacts
-# RUN mkdir -p /opt/ml/model
-# COPY model/model.pkl /opt/ml/model/model.pkl
-
-# # Expose the port used by the Flask app (if using Flask)
-# EXPOSE 8080
-
-# # Set the entry point script for SageMaker Inference
-# ENTRYPOINT ["python", "inference.py"]
-
-FROM python:3.10.4
-
-WORKDIR /app
-
-COPY requirements.txt .
+#pre-trained model package installation
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+# Set environment variables
+ENV PYTHONUNBUFFERED=TRUE
+ENV PYTHONDONTWRITEBYTECODE=TRUE
+ENV PATH="/opt/program:${PATH}"
 
-ENV SM_MODEL_DIR /opt/ml/model
-
-ENTRYPOINT ["gunicorn", "-b", "0.0.0.0:8080", "inference:app", "-n"]
+COPY NER /opt/program
+WORKDIR /opt/program
