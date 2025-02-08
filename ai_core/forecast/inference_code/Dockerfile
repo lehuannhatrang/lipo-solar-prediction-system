@@ -12,7 +12,8 @@ RUN wget https://bootstrap.pypa.io/get-pip.py && python3 get-pip.py && \
         rm -rf /root/.cache
 
 #pre-trained model package installation
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=TRUE

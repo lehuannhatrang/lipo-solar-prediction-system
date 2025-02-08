@@ -1,6 +1,4 @@
-flask
-scikit-learn
+flask>=2.0.0
 numpy
-xgboost
+torch
 gunicorn
-joblib
