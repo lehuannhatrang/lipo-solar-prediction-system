@@ -7,12 +7,12 @@ from utils import render_sidebar_navigation
 
 check_authenticate()
 
+render_sidebar_navigation()
     
 with open('style.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
     
 user_profile()
-render_sidebar_navigation()
 
 # Row A
 st.markdown('## Dashboards')
