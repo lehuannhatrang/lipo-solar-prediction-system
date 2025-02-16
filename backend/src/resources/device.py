@@ -1,31 +1,47 @@
 from flasgger import swag_from
-from datetime import datetime
 from flask import request, jsonify
 from flask_restful import Resource
 from models import LiionBatteryStatus, SolarPanelBatteryStatus
 from sqlalchemy import func
+from middlewares import require_authentication
+from apis.weev import WeevRequest, WEEVRouteName, get_weev_url, extract_devices_info
+import logging
+
+weev_request = WeevRequest()
 
 class DeviceIdsResource(Resource):
     @swag_from("../swagger/device/ids/GET.yml")
+    @require_authentication
     def get(self):
-        device_type = request.args.get('device_type')
-        if device_type == 'LIION_BATTERY':
-            all_battery_ids = LiionBatteryStatus.query.with_entities(LiionBatteryStatus.battery_id).distinct().all()
+        try:
+            device_type = request.args.get('device_type')
             
-            # Convert the result into a list of battery IDs
-            unique_battery_ids = [battery_id[0] for battery_id in all_battery_ids]
+            # Get devices from WEEV API
+            response = weev_request.get(get_weev_url(WEEVRouteName.GET_CUSTOMER_DEVICES))
             
-            return {'device_ids': unique_battery_ids}, 200
-        elif device_type == 'SOLAR_PANEL':
-            all_panel_ids = SolarPanelBatteryStatus.query.with_entities(SolarPanelBatteryStatus.panel_id).distinct().all()
-            
-            # Convert the result into a list of battery IDs
-            unique_panel_ids = [panel_id[0] for panel_id in all_panel_ids]
-            
-            return {'device_ids': unique_panel_ids}, 200
-        else:
-            return {"message": "Device type not found"}, 404
-        
+            if response.status_code != 200:
+                logging.error(f"WEEV API error: {response.text}")
+                return {"message": "Error fetching devices from WEEV"}, response.status_code
+            try:
+                all_devices_response = response.json()
+            except ValueError as e:
+                logging.error(f"Invalid JSON response from WEEV API: {str(e)}")
+                return {"message": "Invalid response from WEEV API"}, 500
+
+            if device_type == 'LIION_BATTERY':
+                lion_battery_devices = extract_devices_info(all_devices_response, 'LionBattery')
+                return {'data': lion_battery_devices}, 200
+                
+            elif device_type == 'SOLAR_PANEL':
+                solar_panel_devices = extract_devices_info(all_devices_response, 'SolarSystem')
+                return {'data': solar_panel_devices}, 200
+                
+            else:
+                return {"message": "Device type not found"}, 404
+                
+        except Exception as e:
+            logging.error(f"Error in device IDs endpoint: {str(e)}")
+            return {"message": "Internal server error"}, 500
 
 class DeviceFieldsResource(Resource):
     @swag_from("../swagger/device/fields/GET.yml")
