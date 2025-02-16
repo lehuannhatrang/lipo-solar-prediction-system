@@ -112,14 +112,16 @@ if  st.session_state.predict_data:
         # Convert 'ts' to datetime for both
         data['datetime'] = pd.to_datetime(data['ts'])
         forecast_data['datetime'] = pd.to_datetime(forecast_data['ts'])
-        combined_data = pd.concat([data, forecast_data])
+
+        last_row = data.iloc[[-1]]
+        forecast_data = pd.concat([last_row, forecast_data], ignore_index=True)
 
         # Create the figure
         fig = go.Figure()
 
         fig.add_trace(go.Scatter(
-            x=combined_data['datetime'],
-            y=combined_data[predict_field],  # Replace 'predict_field' with the actual field name
+            x=data['datetime'],
+            y=data[predict_field],
             mode='lines',
             name=predict_field,
             line=dict(color="#00897b", dash='solid')
@@ -127,7 +129,7 @@ if  st.session_state.predict_data:
 
         fig.add_trace(go.Scatter(
             x=forecast_data['datetime'],
-            y=forecast_data[predict_field],  # Replace 'predict_field' with the actual field name
+            y=forecast_data[predict_field],
             mode='lines',
             name=f'Forecast {predict_field}',
             line=dict(color='#ADD8E6', dash='dash')

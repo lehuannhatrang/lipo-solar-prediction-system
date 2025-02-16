@@ -16,6 +16,7 @@ class ForecastResource(Resource):
             job.predict_data = None
             if job.status != 'Success':
                 if result.ready():
+                    print('result: ', result.result)
                     job.predict_data = result.result
                     job.status = 'Success'
 
@@ -39,7 +40,7 @@ class ForecastResource(Resource):
     def post(self):
         try:
             data = request.get_json()
-            job = forecast_async.apply_async()
+            job = forecast_async.apply_async(args=[data['predict_field']])
             job_id = job.id
             created_ts = datetime.now()
             new_job = PredictionJob(

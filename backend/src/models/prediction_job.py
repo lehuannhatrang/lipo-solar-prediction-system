@@ -19,6 +19,7 @@ class PredictionJob(db.Model, BaseModel):
     status = Column(String(50), nullable=False)  # Status of the job ('Pending', 'In Progress', 'Success')
     result_url = Column(String(255), nullable=True)  # URL for the result (optional)
     job_metadata = Column(JSON, nullable=True)  # Metadata field to store additional information in JSON format (optional)
+    predict_data = Column(JSON, nullable=True)  # Metadata field to store additional information in JSON format (optional)
 
     def __repr__(self):
         return f"<PredictionJob(job_id={self.job_id}, created_by={self.created_by}, type={self.type}, status={self.status})>"
