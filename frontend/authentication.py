@@ -1,7 +1,7 @@
 from typing import Any, Dict, Optional
 import streamlit as st
 import requests
-from routes import VEEVRouteName, get_veev_url
+from routes import WEEVRouteName, get_weev_url
 from st_local_storage import StLocalStorage
 from datetime import datetime
 import jwt
@@ -90,7 +90,7 @@ class AuthenRequest:
             request_body = {
                 "refreshToken": refresh_token
             }
-            response = requests.request('POST', get_veev_url(VEEVRouteName.POST_RENEW_TOKEN), json=request_body)
+            response = requests.request('POST', get_weev_url(WEEVRouteName.POST_RENEW_TOKEN), json=request_body)
             response_val = response.json()
             if "token" in response_val and "refreshToken" in response_val:
                 self.local_storage_handler.set("token", response_val['token'])
@@ -105,13 +105,13 @@ class AuthenRequest:
         token = self.local_storage_handler.get('token')
         jwt_decode = jwt.decode(token, options={"verify_signature": False})
         user_id = jwt_decode['userId']
-        response = self.request('GET', get_veev_url(VEEVRouteName.GET_USER_INFO, user_id=user_id))
+        response = self.request('GET', get_weev_url(WEEVRouteName.GET_USER_INFO, user_id=user_id))
         user_info = response.json()
         st.session_state['user_info'] = user_info
         return user_info
 
     def log_out(self):
-        response = self.request('POST',get_veev_url(VEEVRouteName.POST_LOG_OUT))
+        response = self.request('POST',get_weev_url(WEEVRouteName.POST_LOG_OUT))
         self.local_storage_handler.delete('token')
         self.local_storage_handler.delete('refreshToken')
         time.sleep(0.5)

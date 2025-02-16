@@ -2,6 +2,7 @@ import streamlit as st
 import requests
 import st_local_storage
 import time
+from routes import get_url, RouteName
 
 st.set_page_config(layout='centered', initial_sidebar_state='collapsed')
 
@@ -15,7 +16,7 @@ if token and refreshToken:
     st.switch_page("Homepage.py")
 
 def authenticate(username, password):
-    url = "https://prod.weev.vn/api/auth/login"
+    url = get_url(RouteName.POST_LOGIN)
     payload = {"username": username, "password": password}
     try:
         response = requests.post(url, json=payload)
@@ -41,8 +42,9 @@ def login_page():
 
     if submit:
         auth_response = authenticate(username, password)
-        token = auth_response['token']
-        refreshToken = auth_response['refreshToken']
+        if auth_response is not None:
+            token = auth_response['token']
+            refreshToken = auth_response['refreshToken']
     if token and refreshToken:
         st_ls.set("token", token)
         st_ls.set("refreshToken", refreshToken)

@@ -1,6 +1,5 @@
 import streamlit as st
 from authentication import AuthenRequest
-from routes import VEEVRouteName, get_veev_url
 
 def log_out_button():
     authen_request = AuthenRequest()

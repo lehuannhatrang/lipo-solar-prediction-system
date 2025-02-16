@@ -11,8 +11,8 @@ device_type_labels = {
 }
 
 device_checkbox_labels = {
-    'Li-ion Battery': 'Battery ID',
-    'Solar Panel':'Solar Panel ID'
+    'Li-ion Battery': 'Battery Name',
+    'Solar Panel':'Solar Panel Name'
 }
 
 

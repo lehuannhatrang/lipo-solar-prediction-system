@@ -13,7 +13,7 @@ def get_all_device_ids(device_type):
         'device_type': device_type
     }
     response = auth_request.get(get_url(RouteName.GET_ALL_BATTERY_ID), params=params)
-    return response.json()['device_ids']
+    return response.json()['data']
 
 def render_sidebar_navigation():
     st.sidebar.page_link('Homepage.py', label='Home')

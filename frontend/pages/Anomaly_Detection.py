@@ -35,12 +35,19 @@ device_type = device_type_labels[device_type_label].value
 def get_all_device_ids_cached(device_type_value):
     return get_all_device_ids(device_type_value)
 
-device_id_options = ()
+device_name_options = ()
 if device_type_label:
-    device_ids = get_all_device_ids_cached(device_type)
-    device_id_options = tuple(sorted(device_ids))
+    device_infos = get_all_device_ids_cached(device_type)
+    device_names = [device_info['name'] for device_info in device_infos]
+    device_name_options = tuple(sorted(device_names))
 
-device_id = st.sidebar.selectbox(device_checkbox_labels[device_type_label], device_id_options) 
+device_name = st.sidebar.selectbox(device_checkbox_labels[device_type_label], device_name_options)
+if device_name:
+    device_id = [device_info['id'] for device_info in device_infos if device_info['name'] == device_name]
+    if len(device_id) > 1:
+        device_id = st.sidebar.selectbox('Device ID', device_id, disabled=(len(device_id) == 1))
+    else:
+        st.sidebar.markdown(f'Device ID: {device_id[0]}')
 
 # TIME RANGE SELECTION
 current_time = datetime.now()
