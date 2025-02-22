@@ -1,14 +1,15 @@
 from datetime import datetime
 from flasgger import swag_from
-from flask import request, jsonify
+from flask import request
 from flask_restful import Resource
 from models import PredictionJob
-from config import APP_ENV, BACKEND_HOST
 from celery_init import forecast_async
 from celery.result import AsyncResult
+from middlewares import require_authentication
 
 class ForecastResource(Resource):
     @swag_from("../swagger/forecast/GET.yml")
+    @require_authentication
     def get(self, job_id):
         job = PredictionJob.query.filter_by(job_id=job_id).first()
         if job:

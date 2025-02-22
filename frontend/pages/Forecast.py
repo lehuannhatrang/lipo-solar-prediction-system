@@ -44,15 +44,16 @@ if device_name:
     if len(device_id) > 1:
         device_id = st.sidebar.selectbox('Device ID', device_id, disabled=(len(device_id) == 1))
     else:
-        st.sidebar.markdown(f'Device ID: {device_id[0]}')
+        device_id = device_id[0]
+        st.sidebar.markdown(f'Device ID: {device_id}')
 
 ### FIELDS MULTI_SELECTION
 @st.cache_data
 def get_device_fields_cached(*arg):
     return get_device_fields(*arg)
 
-if device_type_label:
-    device_fields = get_device_fields_cached(device_type)
+if device_id:
+    device_fields = get_device_fields_cached(device_id)
     predict_field_options = list(filter(lambda x: x in forecast_predict_fields, device_fields))
 
 predict_field = st.sidebar.selectbox('Predict field', tuple(predict_field_options))
@@ -69,12 +70,13 @@ def allow_submit():
 
 if st.sidebar.button("Update",  type="primary", disabled=not allow_submit()):
     forecast_range = forecast_labels[forecast_range_label]
-    request = request_forecast(device_type, device_id, predict_field, forecast_range)
+    request = request_forecast(device_type, device_id, device_name, predict_field, forecast_range)
     job_id = request["job_id"]
     st.query_params.from_dict({
         "job_id": job_id,
         "predict_field": predict_field,
         "device_id": device_id,
+        "device_name": device_name,
         "device_type": device_type,
         "forecast_range": forecast_range
     })
@@ -104,7 +106,7 @@ if  st.session_state.predict_data:
 
     job_metadata = predict_data["job_metadata"]
     
-    st.markdown(f'## {job_metadata["device_type"]}: {job_metadata["device_id"]}')
+    st.markdown(f'## {job_metadata["device_type"]}: {job_metadata["device_name"]}')
 
     
     if predict_data["predict_data"]:

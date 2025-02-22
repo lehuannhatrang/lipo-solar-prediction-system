@@ -45,7 +45,8 @@ if device_name:
     if len(device_id) > 1:
         device_id = st.sidebar.selectbox('Device ID', device_id, disabled=(len(device_id) == 1))
     else:
-        st.sidebar.markdown(f'Device ID: {device_id[0]}')
+        device_id = device_id[0]
+        st.sidebar.markdown(f'Device ID: {device_id}')
 ### DATE RANGE SELECTION
 current_time = datetime.datetime.now()
 default_start_time = current_time - datetime.timedelta(days=14)
@@ -61,10 +62,10 @@ date_range = st.sidebar.date_input(
 def get_device_fields_cached(*arg):
     return get_device_fields(*arg)
 
-if device_type_label:
-    device_fields = get_device_fields_cached(device_type)
-    if 'ts' in device_fields:
-        device_fields_options = ['ts'] + sorted([field for field in device_fields if field != 'ts'])
+if device_id:
+    device_fields = get_device_fields_cached(device_id)
+    if 'timestamp' in device_fields:
+        device_fields_options = ['timestamp'] + sorted([field for field in device_fields if field != 'timestamp'])
     else:
         device_fields_options = tuple(sorted(device_fields))
 
@@ -98,6 +99,7 @@ if st.sidebar.button("Update",  type="primary", disabled=not allow_submit()):
     st.session_state.query_data = {
         "data_fields": data_fields,
         "device_id": device_id,
+        "device_name": device_name,
         "device_type_label": device_type_label,
         "device_data": device_data,
         "x_axis_field": x_axis_field,
@@ -106,8 +108,9 @@ if st.sidebar.button("Update",  type="primary", disabled=not allow_submit()):
 
 ### RENDER page
 if st.session_state.query_data:
-    device_id, data_fields, device_type_label, device_data, x_axis_field, y_axis_fields = (
+    device_id, device_name, data_fields, device_type_label, device_data, x_axis_field, y_axis_fields = (
         st.session_state.query_data["device_id"],
+        st.session_state.query_data["device_name"],
         st.session_state.query_data["data_fields"],
         st.session_state.query_data["device_type_label"],
         st.session_state.query_data["device_data"],
@@ -115,14 +118,14 @@ if st.session_state.query_data:
         st.session_state.query_data["y_axis_fields"],
     )
 
-    st.markdown(f'## {device_type_label}: {device_id}')
+    st.markdown(f'## {device_type_label}: {device_name}')
     # Row C
     if device_data:
         data = device_data['data']
         if len(data) > 0:
-            if x_axis_field == 'ts':
+            if x_axis_field == 'timestamp':
                 data = pd.DataFrame(data)
-                data['datetime'] = pd.to_datetime(data['ts'])
+                data['datetime'] = pd.to_datetime(data['timestamp'])
                 x_axis_field = 'datetime'
             colour = chart_colour
             if len(y_axis_fields) > len(colour):

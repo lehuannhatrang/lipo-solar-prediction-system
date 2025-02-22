@@ -21,9 +21,9 @@ def render_sidebar_navigation():
     st.sidebar.page_link('pages/Forecast.py', label='Forecast')
     st.sidebar.page_link('pages/Anomaly_Detection.py', label='Anomally Detection')
 
-def get_device_fields(device_type):
+def get_device_fields(device_id):
     params = {
-        'device_type': device_type
+        'device_id': device_id
     }
     response = auth_request.get(get_url(RouteName.GET_DEVICE_FIELDS), params=params)
     return response.json()['device_data']
@@ -39,10 +39,11 @@ def get_device_data(device_type, device_id, data_fields, start_time, end_time):
     response = auth_request.get(get_url(RouteName.GET_DEVICE_DATA, device_id=device_id), params=params)
     return response.json()
 
-def request_forecast(device_type, device_id, predict_field, forecast_range):
+def request_forecast(device_type, device_id, device_name, predict_field, forecast_range):
     body = {
         'device_type': device_type,
         'device_id': device_id,
+        'device_name': device_name,
         'predict_field': predict_field,
         'forecast_range': forecast_range
     }
