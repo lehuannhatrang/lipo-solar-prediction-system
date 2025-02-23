@@ -61,13 +61,12 @@ class DeviceDataResource(Resource):
     @swag_from("../swagger/device/data/GET.yml")
     @require_authentication
     def get(self, device_id):
-        device_type = request.args.get('device_type')
         data_fields = request.args.getlist('data_fields')
         start_time = int(float(request.args.get('start_time')) *1000)
         end_time = int(float(request.args.get('end_time')) *1000)
 
         params = {
-            'keys': data_fields,
+            'keys': filter(lambda field: field != 'timestamp', data_fields),
             'startTs': start_time,
             'endTs': end_time,
             'intervalType': 'MILLISECONDS',
@@ -82,54 +81,7 @@ class DeviceDataResource(Resource):
             logging.error(f"WEEV API error: {response.text}")
             return {"message": "Error fetching timeseries data from WEEV"}, response.status_code
         response_data = response.json()
-        # result_dict = {}
-        # for key in data_fields:
-        #     if key in response_data:
-        #         field_data = [ {'timestamp': datetime.fromtimestamp(item['ts']/1000).isoformat(), key: item['value']} for item in response_data[key]]
-        #         for item in field_data:
-        #             if item['timestamp'] in result_dict:
-        #                 result_dict[item['timestamp']].update({key: item[key]})
-        #             else:
-        #                 result_dict[item['timestamp']] = {key: item[key]}
-        # result = [ {'timestamp': timestamp, **result_dict[timestamp]} for timestamp in result_dict.keys() ]
 
         result = extract_timeseries_data(response_data)
 
         return jsonify({'data': result, 'device_id': device_id})
-        
-        valid_fields = None
-        if device_type == 'LIION_BATTERY':
-            query = LiionBatteryStatus.query.filter_by(battery_id=device_id)
-
-            query = query.filter(
-                func.extract('epoch', LiionBatteryStatus.ts) >= start_time,
-                func.extract('epoch', LiionBatteryStatus.ts) <= end_time
-            )            
-            if data_fields:
-                valid_fields = [getattr(LiionBatteryStatus, field) for field in data_fields if hasattr(LiionBatteryStatus, field)]
-                if not valid_fields:
-                    return {'error': 'Invalid data_fields provided'}, 400
-                
-            # Execute the query
-            query_all = query.all()
-            device_data = [device.to_dict(data_fields + ['ts']) for device in query_all]
-            return jsonify({'data': device_data, 'device_id': device_id})
-            
-        elif device_type == 'SOLAR_PANEL':
-            query = SolarPanelBatteryStatus.query.filter_by(panel_id=device_id)
-
-            query = query.filter(
-                func.extract('epoch', SolarPanelBatteryStatus.ts) >= start_time,
-                func.extract('epoch', SolarPanelBatteryStatus.ts) <= end_time
-            )            
-            if data_fields:
-                valid_fields = [getattr(SolarPanelBatteryStatus, field) for field in data_fields if hasattr(SolarPanelBatteryStatus, field)]
-                if not valid_fields:
-                    return {'error': 'Invalid data_fields provided'}, 400
-                
-            # Execute the query
-            query_all = query.all()
-            device_data = [device.to_dict(data_fields + ['ts']) for device in query_all]
-            return jsonify({'data': device_data, 'device_id': device_id})
-        else:
-            return {"message": "Device type not found"}, 404

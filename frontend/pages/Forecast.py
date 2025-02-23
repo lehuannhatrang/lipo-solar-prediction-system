@@ -66,7 +66,7 @@ forecast_range_label = st.sidebar.selectbox('Forecast for the next', tuple(forec
 
 
 def allow_submit():
-    return bool(device_id)
+    return bool(device_id) and bool(predict_field) and bool(forecast_range_label)
 
 if st.sidebar.button("Update",  type="primary", disabled=not allow_submit()):
     forecast_range = forecast_labels[forecast_range_label]
@@ -107,7 +107,6 @@ if  st.session_state.predict_data:
     job_metadata = predict_data["job_metadata"]
     
     st.markdown(f'## {job_metadata["device_type"]}: {job_metadata["device_name"]}')
-
     
     if predict_data["predict_data"]:
         # Extract actual data and forecast data
