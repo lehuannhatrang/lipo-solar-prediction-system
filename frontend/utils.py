@@ -8,9 +8,10 @@ import numpy as np
 
 auth_request = AuthenRequest()
 
-def get_all_device_ids(device_type):
+def get_all_device_ids(device_type, include_customer_entity=True):
     params = {
-        'device_type': device_type
+        'device_type': device_type,
+        'include_customer_entity': include_customer_entity
     }
     response = auth_request.get(get_url(RouteName.GET_ALL_BATTERY_ID), params=params)
     return response.json()['data']

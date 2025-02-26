@@ -24,20 +24,23 @@ user_profile()
 
 st.sidebar.header('Anomaly Detection')
 
+include_customer_entity = st.sidebar.checkbox('Include customer entity', value=True)
+
 if 'predict_data' not in st.session_state:
     st.session_state.predict_data = None
+    
 ### DEVICE TYPE SELECTION
-device_type_label = st.sidebar.selectbox('Device', tuple(device_type_labels.keys())) 
+device_type_label = st.sidebar.selectbox('Device', tuple(device_type_labels.keys()))
 device_type = device_type_labels[device_type_label].value
 
 ### DEVICE ID SELECTION
 @st.cache_data
-def get_all_device_ids_cached(device_type_value):
-    return get_all_device_ids(device_type_value)
+def get_all_device_ids_cached(*args):
+    return get_all_device_ids(*args)
 
 device_name_options = ()
 if device_type_label:
-    device_infos = get_all_device_ids_cached(device_type)
+    device_infos = get_all_device_ids_cached(device_type, include_customer_entity)
     device_names = [device_info['name'] for device_info in device_infos]
     device_name_options = tuple(sorted(device_names))
 

@@ -1,9 +1,16 @@
-from flask import request
+from flask import request, jsonify
 from datetime import datetime
+from .request import WeevRequest
+from .routes import get_weev_url, WEEVRouteName
+import math
+
+weev_request = WeevRequest()
+
+MAX_DATA_POINTS = 700
 
 def extract_devices_info(all_devices, type):
-    customer_id = request.customer_id
-    devices_infos = list(filter(lambda device: device['type'] == type and device['customerId']['id'] == customer_id, all_devices['data']))
+    devices_infos = list(filter(lambda device: device['type'] == type, all_devices['data']))
+
     extract_infos = [{'id': device['id']['id'], 'name': device['name']} for device in devices_infos]
     return extract_infos
 
@@ -17,3 +24,26 @@ def extract_timeseries_data(data):
             else:
                 result_dict[item['timestamp']] = {key: item[key]}
     return [ {'timestamp': timestamp, **result_dict[timestamp]} for timestamp in result_dict.keys() ]
+
+def get_timeseries_data(device_id, data_fields, start_time, end_time):
+    interval = math.floor((end_time - start_time)/MAX_DATA_POINTS)
+    params = {
+        'keys': filter(lambda field: field != 'timestamp', data_fields),
+        'startTs': start_time,
+        'endTs': end_time,
+        'intervalType': 'MILLISECONDS',
+        'interval': interval,
+        'agg': 'AVG',
+        'orderBy': 'ASC',
+        'useStrictDataTypes': 'true'
+    }
+
+    response = weev_request.get(get_weev_url(WEEVRouteName.GET_TIMESERIES_DATA, device_id=device_id), params=params)
+    if response.status_code != 200:
+        logging.error(f"WEEV API error: {response.text}")
+        return {"message": "Error fetching timeseries data from WEEV"}, response.status_code
+    response_data = response.json()
+
+    result = extract_timeseries_data(response_data)
+
+    return jsonify({'data': result, 'device_id': device_id})
