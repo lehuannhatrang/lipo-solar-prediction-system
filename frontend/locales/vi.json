@@ -1,0 +1,116 @@
+{
+  "common": {
+    "welcome": "Xin chào",
+    "login": "Đăng nhập",
+    "logout": "Đăng xuất",
+    "register": "Đăng ký",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "submit": "Xác nhận",
+    "update": "Cập nhật",
+    "device": "Thiết bị",
+    "deviceId": "Mã thiết bị",
+    "deviceName": "Tên thiết bị",
+    "includeCustomer": "Bao gồm thông tin khách hàng",
+    "date": "Ngày",
+    "to": "đến",
+    "home": "Trang chủ",
+    "collections": "Bộ sưu tập",
+    "forecast": "Dự báo",
+    "anomalyDetection": "Phát hiện Bất thường",
+    "settings": "Cài đặt",
+    "userLicense": "Quyền người dùng"
+  },
+  "home": {
+    "title": "Bảng điều khiển",
+    "liBattery": "Pin Li-ion",
+    "solarPanel": "Tấm pin Mặt trời",
+    "total": "Tổng",
+    "anomaly": "Bất thường"
+  },
+  "settings": {
+    "title": "Cài đặt",
+    "languageSettings": "Cài đặt Ngôn ngữ",
+    "userInfo": "Thông tin Người dùng",
+    "id": "Mã số",
+    "email": "Email",
+    "phone": "Số điện thoại",
+    "userNotFound": "Không tìm thấy thông tin người dùng"
+  },
+  "forecast": {
+    "title": "Dự báo Năng lượng Mặt trời",
+    "date": "Ngày",
+    "power": "Công suất",
+    "prediction": "Dự đoán",
+    "actual": "Thực tế",
+    "selectDevice": "Chọn thiết bị",
+    "predictField": "Trường dự đoán",
+    "forecastRange": "Khoảng thời gian dự báo",
+    "waiting": "Đang chờ kết quả dự báo...",
+    "success": "Dự báo hoàn tất!",
+    "inProgress": "Đang trong quá trình dự báo, vui lòng đợi",
+    "selectParams": "Vui lòng chọn thông số dự báo và nhấn Cập nhật",
+    "includeCustomer": "Bao gồm thông tin khách hàng",
+    "deviceId": "Mã thiết bị",
+    "deviceName": "Tên thiết bị",
+    "device": "Loại thiết bị",
+    "update": "Cập nhật"
+  },
+  "dashboard": {
+    "overview": "Tổng quan",
+    "statistics": "Thống kê",
+    "devices": "Thiết bị",
+    "settings": "Cài đặt"
+  },
+  "anomaly": {
+    "title": "Phát hiện Bất thường",
+    "heatmapTitle": "Bản đồ nhiệt Điểm Bất thường",
+    "waiting": "Đang chờ kết quả phân tích bất thường...",
+    "anomalyData": "Dữ liệu bất thường từ",
+    "anomalyScore": "Điểm Bất thường",
+    "anomalyScoreOverTime": "Điểm Bất thường theo Thời gian"
+  },
+  "collections": {
+    "title": "Bộ sưu tập",
+    "xAxis": "Trường trục X",
+    "yAxis": "Trường trục Y",
+    "dateRange": "Khoảng thời gian",
+    "chart": "Biểu đồ",
+    "dataTable": "Bảng dữ liệu",
+    "noData": "Không tìm thấy dữ liệu cho các thông số đã chọn",
+    "selectParams": "Vui lòng chọn thông số truy vấn và nhấn Cập nhật"
+  },
+  "login": {
+    "title": "Đăng nhập",
+    "username": "Tên đăng nhập",
+    "password": "Mật khẩu",
+    "loginButton": "Đăng nhập",
+    "failed": "Đăng nhập thất bại"
+  },
+  "errors": {
+    "required": "Trường này là bắt buộc",
+    "invalidEmail": "Địa chỉ email không hợp lệ",
+    "invalidPassword": "Mật khẩu phải có ít nhất 8 ký tự"
+  },
+  "userLicense": {
+    "title": "Quản trị Phân quyền người dùng",
+    "createNew": "Tạo Môi Quyen",
+    "email": "Email",
+    "userId": "Mã người dùng",
+    "status": "Trạng thái",
+    "expirationDate": "Ngày hết hạn",
+    "lastLogin": "Ngày đăng nhập cuối",
+    "createdAt": "Ngày tạo",
+    "updatedAt": "Ngày cập nhật",
+    "actions": "Hành động",
+    "toggleStatus": "Đổi trạng thái",
+    "createButton": "Tạo quyen",
+    "optional": "optional",
+    "noLicenses": "Không tìm thấy quyen người dùng",
+    "createSuccess": "Đã tạo quyen cho {email}",
+    "updateSuccess": "Đã cập nhật trạng thái quyen cho {email}",
+    "createError": "Loại lỗi khi tạo quyen: {error}",
+    "updateError": "Loại lỗi khi cập nhật trạng thái quyen: {error}",
+    "loadError": "Loại lỗi khi lấy dữ liệu: {error}"
+  }
+}

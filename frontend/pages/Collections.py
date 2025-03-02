@@ -6,9 +6,10 @@ import pandas as pd
 import random
 import matplotlib.colors as mcolors
 from authentication import check_authenticate
-from components.user_profile.index import user_profile
+from components.user_profile import user_profile
 from utils import get_all_device_ids, get_device_data, get_device_fields, render_sidebar_navigation
-from constants import device_type_labels, device_checkbox_labels, chart_colour
+from utils_i18n.i18n import get_text
+from constants import device_type_labels, chart_colour
 
 
 check_authenticate()
@@ -20,14 +21,14 @@ with open('style.css') as f:
     
 user_profile()
 
-st.sidebar.header('Collections')
+st.sidebar.header(get_text('collections.title'))
 
-include_customer_entity = st.sidebar.checkbox('Include customer entity', value=True)
+include_customer_entity = st.sidebar.checkbox(get_text('common.includeCustomer'), value=True)
 
 if 'query_data' not in st.session_state:
     st.session_state.query_data = None
 ### DEVICE TYPE SELECTION
-device_type_label = st.sidebar.selectbox('Device', tuple(device_type_labels.keys())) 
+device_type_label = st.sidebar.selectbox(get_text('common.device'), tuple(device_type_labels.keys())) 
 device_type = device_type_labels[device_type_label].value
 
 ### DEVICE ID SELECTION
@@ -41,24 +42,15 @@ if device_type_label:
     device_names = [device_info['name'] for device_info in device_infos]
     device_name_options = tuple(sorted(device_names))
 
-device_name = st.sidebar.selectbox(device_checkbox_labels[device_type_label], device_name_options)
+device_name = st.sidebar.selectbox(get_text('common.deviceName'), device_name_options)
 if device_name:
     device_id = [device_info['id'] for device_info in device_infos if device_info['name'] == device_name]
     if len(device_id) > 1:
-        device_id = st.sidebar.selectbox('Device ID', device_id, disabled=(len(device_id) == 1))
+        device_id = st.sidebar.selectbox(get_text('common.deviceId'), device_id, disabled=(len(device_id) == 1))
     else:
         device_id = device_id[0]
-        st.sidebar.markdown(f'Device ID: {device_id}')
-### DATE RANGE SELECTION
-current_time = datetime.datetime.now()
-default_start_time = current_time - datetime.timedelta(days=14)
-date_range = st.sidebar.date_input(
-    "From - To",
-    (default_start_time, current_time),
-    None,
-    current_time,
-    format="MM.DD.YYYY",
-)
+        st.sidebar.markdown(f"{get_text('common.deviceId')}: {device_id}")
+
 ### FIELDS MULTI_SELECTION
 @st.cache_data
 def get_device_fields_cached(*arg):
@@ -69,41 +61,41 @@ if device_id:
     if 'timestamp' in device_fields:
         device_fields_options = ['timestamp'] + sorted([field for field in device_fields if field != 'timestamp'])
     else:
-        device_fields_options = tuple(sorted(device_fields))
+        device_fields_options = sorted(device_fields)
 
-st.sidebar.subheader('Chart options')
+    x_axis_field = st.sidebar.selectbox(get_text('collections.xAxis'), device_fields_options)
+    y_axis_fields = st.sidebar.multiselect(get_text('collections.yAxis'), device_fields_options)
 
-x_axis_field = st.sidebar.selectbox('X Axis', tuple(device_fields_options))
-
-y_axis_fields_options = filter(lambda x: x not in x_axis_field, device_fields)
-y_axis_fields = st.sidebar.multiselect('Y Axis', tuple(y_axis_fields_options))
-
-
+### DATE RANGE SELECTION
+current_time = datetime.datetime.now()
+default_start_time = current_time - datetime.timedelta(days=14)
+date_range = st.sidebar.date_input(get_text('collections.dateRange'), value=(default_start_time, current_time))
 
 @st.cache_data
 def get_device_data_cached(*arg):
     return get_device_data(*arg)
 
 def allow_submit():
-    return bool(device_id) and \
-           date_range and len(date_range) >= 2 and date_range[0] and date_range[1] and \
-           y_axis_fields and len(y_axis_fields) > 0
+    return (
+        device_id is not None and
+        x_axis_field is not None and
+        len(y_axis_fields) > 0 and
+        len(date_range) == 2 and
+        date_range[0] is not None and
+        date_range[1] is not None
+    )
 
-if st.sidebar.button("Update",  type="primary", disabled=not allow_submit()):
+if st.sidebar.button(get_text('common.update'), type="primary", disabled=not allow_submit()):
     start_time = datetime.datetime.combine(date_range[0], datetime.time.min)
     end_time = datetime.datetime.combine(date_range[1], datetime.time.max)
     data_fields = [x_axis_field] + y_axis_fields
-    device_data = get_device_data_cached(device_type, 
-                                         device_id, data_fields, 
-                                         start_time.timestamp(), 
-                                         end_time.timestamp()
-                                        )
+    data = get_device_data_cached(device_type, device_id, data_fields, start_time.timestamp(), end_time.timestamp())
     st.session_state.query_data = {
         "data_fields": data_fields,
         "device_id": device_id,
         "device_name": device_name,
         "device_type_label": device_type_label,
-        "device_data": device_data,
+        "device_data": data,
         "x_axis_field": x_axis_field,
         "y_axis_fields": y_axis_fields
     }
@@ -136,5 +128,6 @@ if st.session_state.query_data:
             st.line_chart(data, x = x_axis_field, y = y_axis_fields, height = 500, color=(color_list))
         else:
             st.image("gallery/images/data_not_found.jpg", width=800)
+            st.warning(get_text('collections.noData'))
 else:
-    st.markdown('Please select query parameters and press Update')
+    st.markdown(get_text('collections.selectParams'))

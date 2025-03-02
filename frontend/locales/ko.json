@@ -1,0 +1,116 @@
+{
+  "common": {
+    "welcome": "환영합니다",
+    "login": "로그인",
+    "logout": "로그아웃",
+    "register": "회원가입",
+    "email": "이메일",
+    "password": "비밀번호",
+    "submit": "제출",
+    "update": "업데이트",
+    "device": "장치",
+    "deviceId": "장치 ID",
+    "deviceName": "장치 이름",
+    "includeCustomer": "고객 정보 포함",
+    "date": "날짜",
+    "to": "부터",
+    "home": "홈",
+    "collections": "컬렉션",
+    "forecast": "예측",
+    "anomalyDetection": "이상 감지",
+    "settings": "설정",
+    "userLicense": "사용자 라이셀"
+  },
+  "home": {
+    "title": "대시보드",
+    "liBattery": "리튬이온 배터리",
+    "solarPanel": "태양광 패널",
+    "total": "전체",
+    "anomaly": "이상"
+  },
+  "settings": {
+    "title": "설정",
+    "languageSettings": "언어 설정",
+    "userInfo": "사용자 정보",
+    "id": "ID",
+    "email": "이메일",
+    "phone": "전화번호",
+    "userNotFound": "사용자 정보를 찾을 수 없습니다"
+  },
+  "forecast": {
+    "title": "태양광 발전 예측",
+    "date": "날짜",
+    "power": "발전량",
+    "prediction": "예측",
+    "actual": "실제",
+    "selectDevice": "장치 선택",
+    "predictField": "예측 필드",
+    "forecastRange": "예측 기간",
+    "waiting": "예측 결과를 기다리는 중...",
+    "success": "예측이 완료되었습니다!",
+    "inProgress": "예측이 진행 중입니다. 잠시만 기다려주세요",
+    "selectParams": "예측 매개변수를 선택하고 업데이트를 눌러주세요",
+    "includeCustomer": "고객 정보 포함",
+    "deviceId": "장치 ID",
+    "deviceName": "장치 이름",
+    "device": "장치 힌트",
+    "update": "예측"
+  },
+  "anomaly": {
+    "title": "이상 감지",
+    "heatmapTitle": "이상 점수 히트맵",
+    "waiting": "이상 감지 결과를 기다리는 중...",
+    "anomalyData": "이상 데이터",
+    "anomalyScore": "이상 점수",
+    "anomalyScoreOverTime": "시간별 이상 점수"
+  },
+  "collections": {
+    "title": "컬렉션",
+    "xAxis": "X축 필드",
+    "yAxis": "Y축 필드",
+    "dateRange": "날짜 범위",
+    "chart": "차트",
+    "dataTable": "데이터 테이블",
+    "noData": "선택한 매개변수에 대한 데이터를 찾을 수 없습니다",
+    "selectParams": "쿼리 매개변수를 선택하고 업데이트를 클릭하세요"
+  },
+  "login": {
+    "title": "로그인",
+    "username": "사용자 이름",
+    "password": "비밀번호",
+    "loginButton": "로그인",
+    "failed": "로그인 실패"
+  },
+  "dashboard": {
+    "overview": "개요",
+    "statistics": "통계",
+    "devices": "장치",
+    "settings": "설정"
+  },
+  "errors": {
+    "required": "필수 입력 항목입니다",
+    "invalidEmail": "유효하지 않은 이메일 주소입니다",
+    "invalidPassword": "비밀번호는 8자 이상이어야 합니다"
+  },
+  "userLicense": {
+    "title": "사용자 라이셀 관리",
+    "createNew": "불러오기",
+    "email": "이메일",
+    "userId": "사용자 ID",
+    "status": "상태",
+    "expirationDate": "기간限정",
+    "lastLogin": "최종 로그인",
+    "createdAt": "생성일",
+    "updatedAt": "최종 수정일",
+    "actions": "작업",
+    "toggleStatus": "상태 토큰",
+    "createButton": "초기화",
+    "optional": "optional",
+    "noLicenses": "사용자 라이셀이 없습니다",
+    "createSuccess": "Successfully created license for {email}",
+    "updateSuccess": "Successfully updated license status for {email}",
+    "createError": "Error creating license: {error}",
+    "updateError": "Error updating license status: {error}",
+    "loadError": "Error loading user licenses: {error}"
+  }
+}

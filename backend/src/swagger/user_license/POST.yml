@@ -1,0 +1,53 @@
+Create new user license
+---
+tags:
+  - User License
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      type: object
+      properties:
+        email:
+          type: string
+          required: true
+        user_id:
+          type: string
+        expired_ts:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [active, inactive]
+responses:
+  201:
+    description: User license created successfully
+    schema:
+      type: object
+      properties:
+        email:
+          type: string
+        user_id:
+          type: string
+        expired_ts:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [active, inactive]
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        last_login_ts:
+          type: string
+          format: date-time
+  400:
+    description: Invalid request parameters
+  409:
+    description: User license already exists
+  500:
+    description: Internal server error

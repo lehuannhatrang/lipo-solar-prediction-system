@@ -5,6 +5,7 @@ from routes import RouteName, get_url
 import pandas as pd
 from datetime import timedelta
 import numpy as np
+from utils_i18n.i18n import get_text
 
 auth_request = AuthenRequest()
 
@@ -17,10 +18,12 @@ def get_all_device_ids(device_type, include_customer_entity=True):
     return response.json()['data']
 
 def render_sidebar_navigation():
-    st.sidebar.page_link('Homepage.py', label='Home')
-    st.sidebar.page_link('pages/Collections.py', label='Collections')
-    st.sidebar.page_link('pages/Forecast.py', label='Forecast')
-    st.sidebar.page_link('pages/Anomaly_Detection.py', label='Anomally Detection')
+    st.sidebar.page_link('Homepage.py', label=get_text('common.home'))
+    st.sidebar.page_link('pages/Collections.py', label=get_text('common.collections'))
+    st.sidebar.page_link('pages/Forecast.py', label=get_text('common.forecast'))
+    st.sidebar.page_link('pages/Anomaly_Detection.py', label=get_text('common.anomalyDetection'))
+    st.sidebar.page_link('pages/UserLicense.py', label=get_text('common.userLicense'))
+    st.sidebar.page_link('pages/Settings.py', label=get_text('common.settings'))
 
 def get_device_fields(device_id):
     params = {

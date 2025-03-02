@@ -42,7 +42,7 @@ flask_app = create_app('forecast')
 celery_app = flask_app.extensions["celery"]
 
 @shared_task(ignore_result=False)
-def forecast_async(predict_field: str) -> int:
+def forecast_async(predict_field: str, timeseries_data: list) -> int:
     input_size = 3
     sequence_length = 40
     # AWS credentials and configuration
@@ -64,9 +64,11 @@ def forecast_async(predict_field: str) -> int:
 
     # Send the request
     try:
-        input_data = np.random.rand(1, sequence_length, input_size).tolist()
+        # input_data = np.random.rand(1, sequence_length, input_size).tolist()
+        input_data = [[[data_point[predict_field], 0, 0] for data_point in timeseries_data[-sequence_length:]]]
 
         body = json.dumps({"features": input_data})
+        
         response = sagemaker_runtime.invoke_endpoint(
             EndpointName=endpoint_name,
             Body=body,
@@ -79,17 +81,12 @@ def forecast_async(predict_field: str) -> int:
             response_data = response["Body"].read().decode("utf-8")
             predictions_data = json.loads(response_data)['predictions'][0]
 
-            data = [
-                {'ts': (datetime.now() - i * timedelta(hours=6)).isoformat(), predict_field: input_data[0][i][-1]} for i in reversed(range(len(input_data[0])))
-            ]
-
-
             forecast_data = [
-                {'ts': (datetime.now() + i * timedelta(hours=6)).isoformat(), predict_field: predictions_data[i]} for i in range(len(predictions_data))
+                {'timestamp': (datetime.now() + i * timedelta(hours=6)).isoformat(), predict_field: predictions_data[i]*100} for i in range(len(predictions_data))
             ]
 
             result = {
-                'data': data,
+                'data': timeseries_data,
                 'forecast': forecast_data
             }
             return result

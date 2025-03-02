@@ -28,7 +28,7 @@ def extract_timeseries_data(data):
 def get_timeseries_data(device_id, data_fields, start_time, end_time):
     interval = math.floor((end_time - start_time)/MAX_DATA_POINTS)
     params = {
-        'keys': filter(lambda field: field != 'timestamp', data_fields),
+        'keys': list(filter(lambda field: field != 'timestamp', data_fields)),
         'startTs': start_time,
         'endTs': end_time,
         'intervalType': 'MILLISECONDS',
@@ -37,13 +37,15 @@ def get_timeseries_data(device_id, data_fields, start_time, end_time):
         'orderBy': 'ASC',
         'useStrictDataTypes': 'true'
     }
-
     response = weev_request.get(get_weev_url(WEEVRouteName.GET_TIMESERIES_DATA, device_id=device_id), params=params)
+
     if response.status_code != 200:
         logging.error(f"WEEV API error: {response.text}")
         return {"message": "Error fetching timeseries data from WEEV"}, response.status_code
+
     response_data = response.json()
-
-    result = extract_timeseries_data(response_data)
-
-    return jsonify({'data': result, 'device_id': device_id})
+    try:
+        return extract_timeseries_data(response_data)
+    except Exception as e:
+        logging.error(f"Error processing timeseries data: {e}")
+        return {"message": "Error processing timeseries data"}, 500

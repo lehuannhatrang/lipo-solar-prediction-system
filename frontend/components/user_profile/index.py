@@ -25,4 +25,3 @@ def user_profile():
             """,
             unsafe_allow_html=True,
         )
-    log_out_button()

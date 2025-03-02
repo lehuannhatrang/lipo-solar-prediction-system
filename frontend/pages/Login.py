@@ -3,6 +3,7 @@ import requests
 import st_local_storage
 import time
 from routes import get_url, RouteName
+from utils_i18n.i18n import get_text
 
 st.set_page_config(layout='centered', initial_sidebar_state='collapsed')
 
@@ -23,20 +24,20 @@ def authenticate(username, password):
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
-        st.error("Login failed")
+        st.error(get_text("login.failed"))
         return None
 
 def login_page():
     with open('style.css') as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
-    st.title("Login")
+    st.title(get_text("login.title"))
     
     # Create a login form
     with st.form("login_form"):
-        username = st.text_input("Username")
-        password = st.text_input("Password",type="password")
-        submit = st.form_submit_button("Log In")
+        username = st.text_input(get_text("login.username"))
+        password = st.text_input(get_text("login.password"), type="password")
+        submit = st.form_submit_button(get_text("login.loginButton"))
     token = None
     refreshToken = None
 
@@ -49,7 +50,6 @@ def login_page():
         st_ls.set("token", token)
         st_ls.set("refreshToken", refreshToken)
         time.sleep(1)
-        if st_ls.get("token", cached=False):
-            st.switch_page("Homepage.py")
+        st.switch_page("Homepage.py")
 
 login_page()

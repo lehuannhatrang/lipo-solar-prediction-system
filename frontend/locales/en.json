@@ -1,0 +1,116 @@
+{
+  "common": {
+    "welcome": "Welcome",
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Submit",
+    "update": "Update",
+    "device": "Device",
+    "deviceId": "Device ID",
+    "deviceName": "Device Name",
+    "includeCustomer": "Include customer entity",
+    "date": "Date",
+    "to": "to",
+    "home": "Home",
+    "collections": "Collections",
+    "forecast": "Forecast",
+    "anomalyDetection": "Anomaly Detection",
+    "settings": "Settings",
+    "userLicense": "User License"
+  },
+  "home": {
+    "title": "Dashboards",
+    "liBattery": "Li-ion Battery",
+    "solarPanel": "Solar Panel",
+    "total": "Total",
+    "anomaly": "Anomaly"
+  },
+  "settings": {
+    "title": "Settings",
+    "languageSettings": "Language Settings",
+    "userInfo": "User Information",
+    "id": "ID",
+    "email": "Email",
+    "phone": "Phone",
+    "userNotFound": "User information not found"
+  },
+  "forecast": {
+    "title": "Solar Power Forecast",
+    "date": "Date",
+    "power": "Power Output",
+    "prediction": "Prediction",
+    "actual": "Actual",
+    "selectDevice": "Select Device",
+    "predictField": "Predict Field",
+    "forecastRange": "Forecast Range",
+    "waiting": "Waiting for forecast results...",
+    "success": "Forecast completed!",
+    "inProgress": "Forecast in progress, please wait",
+    "selectParams": "Please select prediction parameters and click Update",
+    "includeCustomer": "Include customer entity",
+    "deviceId": "Device ID",
+    "deviceName": "Device Name",
+    "device": "Device Type",
+    "update": "Update"
+  },
+  "anomaly": {
+    "title": "Anomaly Detection",
+    "heatmapTitle": "Anomaly Score Heatmap",
+    "waiting": "Waiting for Anomaly result...",
+    "anomalyData": "Anomaly data from",
+    "anomalyScore": "Anomaly Score",
+    "anomalyScoreOverTime": "Anomaly Score Over Time"
+  },
+  "collections": {
+    "title": "Collections",
+    "xAxis": "X-Axis Field",
+    "yAxis": "Y-Axis Fields",
+    "dateRange": "Date Range",
+    "chart": "Chart",
+    "dataTable": "Data Table",
+    "noData": "No data found for the selected parameters",
+    "selectParams": "Please select query parameters and click Update"
+  },
+  "login": {
+    "title": "Login",
+    "username": "Username",
+    "password": "Password",
+    "loginButton": "Log In",
+    "failed": "Login failed"
+  },
+  "dashboard": {
+    "overview": "Overview",
+    "statistics": "Statistics",
+    "devices": "Devices",
+    "settings": "Settings"
+  },
+  "errors": {
+    "required": "This field is required",
+    "invalidEmail": "Invalid email address",
+    "invalidPassword": "Password must be at least 8 characters"
+  },
+  "userLicense": {
+    "title": "User License Management",
+    "createNew": "Create New License",
+    "email": "Email",
+    "userId": "User ID",
+    "status": "Status",
+    "expirationDate": "Expiration Date",
+    "lastLogin": "Last Login",
+    "createdAt": "Created At",
+    "updatedAt": "Updated At",
+    "actions": "Actions",
+    "toggleStatus": "Toggle Status",
+    "createButton": "Create License",
+    "optional": "optional",
+    "noLicenses": "No user licenses found",
+    "createSuccess": "Successfully created license for {email}",
+    "updateSuccess": "Successfully updated license status for {email}",
+    "createError": "Error creating license: {error}",
+    "updateError": "Error updating license status: {error}",
+    "loadError": "Error loading user licenses: {error}"
+  }
+}

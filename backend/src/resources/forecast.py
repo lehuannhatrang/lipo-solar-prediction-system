@@ -6,6 +6,9 @@ from models import PredictionJob
 from celery_init import forecast_async
 from celery.result import AsyncResult
 from middlewares import require_authentication
+from apis.weev import get_timeseries_data
+from datetime import datetime
+import math
 
 class ForecastResource(Resource):
     @swag_from("../swagger/forecast/GET.yml")
@@ -17,11 +20,10 @@ class ForecastResource(Resource):
             job.predict_data = None
             if job.status != 'Success':
                 if result.ready():
-                    print('result: ', result.result)
                     job.predict_data = result.result
                     job.status = 'Success'
 
-            job.save()
+                job.save()
             
             return {
                 "job_id": str(job.job_id),
@@ -37,11 +39,21 @@ class ForecastResource(Resource):
         else:
             return {"message": "Job not found"}, 404
         
+    @require_authentication
     @swag_from("../swagger/forecast-request/POST.yml")
     def post(self):
         try:
             data = request.get_json()
-            job = forecast_async.apply_async(args=[data['predict_field']])
+            
+            data_fields = [data['predict_field']]
+            end_time = math.floor(datetime.now().timestamp() * 1000)
+            start_time = end_time - (28 * 24 * 3600 * 1000)
+
+            timeseries_data = get_timeseries_data(data['device_id'], data_fields, start_time, end_time)
+            if not timeseries_data or len(timeseries_data) == 0:
+                return {"message": "No data found for prediction"}, 400
+            
+            job = forecast_async.apply_async(args=[data['predict_field'], timeseries_data])
             job_id = job.id
             created_ts = datetime.now()
             new_job = PredictionJob(

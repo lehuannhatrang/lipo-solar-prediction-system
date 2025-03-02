@@ -3,9 +3,8 @@ from flask import request, jsonify
 from flask_restful import Resource
 from sqlalchemy import func
 from middlewares import require_authentication
-from apis.weev import WeevRequest, WEEVRouteName, get_weev_url, extract_devices_info, extract_timeseries_data, get_timeseries_data
+from apis.weev import WeevRequest, WEEVRouteName, get_weev_url, extract_devices_info, get_timeseries_data
 import logging
-from datetime import datetime
 
 weev_request = WeevRequest()
 
@@ -60,10 +59,14 @@ class DeviceDataResource(Resource):
     @swag_from("../swagger/device/data/GET.yml")
     @require_authentication
     def get(self, device_id):
-        data_fields = request.args.getlist('data_fields')
-        start_time = int(float(request.args.get('start_time')) *1000)
-        end_time = int(float(request.args.get('end_time')) *1000)
+        try:
+            data_fields = request.args.getlist('data_fields')
+            start_time = int(float(request.args.get('start_time')) *1000)
+            end_time = int(float(request.args.get('end_time')) *1000)
 
-        timeseries_data = get_timeseries_data(device_id, data_fields, start_time, end_time)
+            timeseries_data = get_timeseries_data(device_id, data_fields, start_time, end_time)
 
-        return timeseries_data
+            return jsonify({'data': timeseries_data, 'device_id': device_id})
+        except Exception as e:
+            logging.error(f"Error in device data endpoint: {str(e)}")
+            return {"message": "Internal server error"}, 500

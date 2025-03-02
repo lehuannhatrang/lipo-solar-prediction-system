@@ -1,0 +1,39 @@
+Get user license by email
+---
+tags:
+  - User License
+parameters:
+  - name: email
+    in: path
+    type: string
+    required: true
+    description: Email address of the user
+responses:
+  200:
+    description: User license details
+    schema:
+      type: object
+      properties:
+        email:
+          type: string
+        user_id:
+          type: string
+        expired_ts:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [active, inactive]
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        last_login_ts:
+          type: string
+          format: date-time
+  404:
+    description: User license not found
+  500:
+    description: Internal server error
