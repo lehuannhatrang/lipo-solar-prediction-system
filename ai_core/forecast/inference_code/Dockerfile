@@ -11,14 +11,27 @@ RUN wget https://bootstrap.pypa.io/get-pip.py && python3 get-pip.py && \
     pip install flask gevent gunicorn && \
         rm -rf /root/.cache
 
-#pre-trained model package installation
+# Copy requirements and install dependencies
 COPY requirements.txt .
 RUN pip install -r requirements.txt
+
+# Set up the program in the image
+COPY NER /opt/program
+WORKDIR /opt/program
+
+# Make serve script executable
+RUN chmod +x /opt/program/serve
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=TRUE
 ENV PYTHONDONTWRITEBYTECODE=TRUE
 ENV PATH="/opt/program:${PATH}"
 
-COPY NER /opt/program
-WORKDIR /opt/program
+# Set up nginx
+RUN mkdir -p /var/log/nginx && touch /var/log/nginx/error.log
+RUN ln -s /opt/program/nginx.conf /etc/nginx/conf.d/nginx.conf
+
+EXPOSE 8080
+
+# Define entrypoint
+ENTRYPOINT ["/opt/program/serve"]

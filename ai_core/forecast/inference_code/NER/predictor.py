@@ -7,17 +7,17 @@ from flask import Flask, Response, request, jsonify
 # Initialize the Flask app
 app = Flask(__name__)
 
-# Hyperparameters
-input_size = 3  # e.g., time input
-hidden_size = 64
-num_layers = 2
-sequence_length = 40
-future_steps = 20
-batch_size = 32
+# Hyperparameters from environment variables with defaults
+input_size = int(os.environ.get('SM_HP_INPUT_SIZE', 3))
+hidden_size = int(os.environ.get('SM_HP_HIDDEN_SIZE', 64))
+num_layers = int(os.environ.get('SM_HP_NUM_LAYERS', 2))
+sequence_length = int(os.environ.get('SM_HP_SEQUENCE_LENGTH', 40))
+future_steps = int(os.environ.get('SM_HP_FUTURE_STEPS', 20))
+batch_size = int(os.environ.get('SM_HP_BATCH_SIZE', 32))
 
-class SOHPredictor(torch.nn.Module):
+class PredictModel(torch.nn.Module):
     def __init__(self, input_size, hidden_size, num_layers, future_steps):
-        super(SOHPredictor, self).__init__()
+        super(PredictModel, self).__init__()
         self.hidden_size = hidden_size
         self.num_layers = num_layers
         self.lstm = torch.nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
@@ -41,12 +41,13 @@ def model_fn(model_dir):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         
         # Initialize model with the same architecture
-        model = SOHPredictor(input_size, hidden_size, num_layers, future_steps)
+        model = PredictModel(input_size, hidden_size, num_layers, future_steps)
         
         # In SageMaker, the model file will be in the model_dir
         model_path = os.path.join(model_dir, "model.pt")
         if not os.path.exists(model_path):
-            raise FileNotFoundError(f"Model file not found at {model_path}")
+            print(f"Warning: Model file not found at {model_path}. Using uninitialized model for development.")
+            return model.to(device)
         
         # Load the saved model state_dict
         model.load_state_dict(torch.load(model_path, map_location=device))
