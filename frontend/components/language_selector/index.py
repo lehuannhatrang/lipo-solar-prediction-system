@@ -1,5 +1,5 @@
 import streamlit as st
-from utils_i18n.i18n import set_language, get_available_languages
+from utils.i18n import set_language, get_available_languages
 from st_local_storage import StLocalStorage
 
 def language_selector():

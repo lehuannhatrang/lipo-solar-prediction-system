@@ -1,11 +1,13 @@
 import streamlit as st
-st.set_page_config(layout='wide', initial_sidebar_state='expanded')
+from utils import set_page_config
+
+set_page_config()
 
 import pandas as pd
 from authentication import check_authenticate
 from components.user_profile.index import user_profile
 from utils import get_all_device_ids, create_year_heatmap, get_forecast_data, render_sidebar_navigation
-from utils_i18n.i18n import get_text
+from utils.i18n import get_text
 from constants import device_type_labels
 import calendar
 import plotly.express as px

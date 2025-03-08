@@ -1,12 +1,14 @@
 import streamlit as st
-st.set_page_config(layout='wide', initial_sidebar_state='expanded')
+from utils import set_page_config
+
+set_page_config()
 
 from datetime import datetime
 import pandas as pd
 from authentication import check_authenticate, AuthenRequest
 from routes import RouteName, get_url
 from utils import render_sidebar_navigation
-from utils_i18n.i18n import get_text
+from utils.i18n import get_text
 
 
 # Check authentication

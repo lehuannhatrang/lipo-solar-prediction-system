@@ -8,6 +8,14 @@ from streamlit_js import st_js
 KEY_PREFIX = "st_localstorage_"
 
 class StLocalStorage:
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
+    
     def __init__(self):
         # Keep track of a UUID for each key to enable reruns
         if "_ls_unique_keys" not in st.session_state:

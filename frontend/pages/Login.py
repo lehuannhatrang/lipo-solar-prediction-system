@@ -3,7 +3,7 @@ import requests
 import st_local_storage
 import time
 from routes import get_url, RouteName
-from utils_i18n.i18n import get_text
+from utils.i18n import get_text
 
 st.set_page_config(layout='centered', initial_sidebar_state='collapsed')
 

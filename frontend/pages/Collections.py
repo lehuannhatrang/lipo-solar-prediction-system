@@ -1,5 +1,7 @@
 import streamlit as st
-st.set_page_config(layout='wide', initial_sidebar_state='expanded')
+from utils import set_page_config
+
+set_page_config()
 
 import datetime
 import pandas as pd
@@ -8,7 +10,7 @@ import matplotlib.colors as mcolors
 from authentication import check_authenticate
 from components.user_profile import user_profile
 from utils import get_all_device_ids, get_device_data, get_device_fields, render_sidebar_navigation
-from utils_i18n.i18n import get_text
+from utils.i18n import get_text
 from constants import device_type_labels, chart_colour
 
 

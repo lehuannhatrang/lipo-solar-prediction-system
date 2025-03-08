@@ -1,12 +1,14 @@
 import streamlit as st
-st.set_page_config(layout='wide', initial_sidebar_state='expanded')
+from utils import set_page_config
+
+set_page_config()
 
 import datetime
 import pandas as pd
 from authentication import check_authenticate
 from components.user_profile.index import user_profile
 from utils import get_all_device_ids, render_sidebar_navigation, request_forecast, get_device_fields, get_forecast_data
-from utils_i18n.i18n import get_text
+from utils.i18n import get_text
 from constants import device_type_labels, forecast_predict_fields, forecast_labels
 import plotly.graph_objects as go
 
@@ -20,7 +22,7 @@ with open('style.css') as f:
 
 user_profile()
 
-    
+
 st.sidebar.header(get_text('forecast.title'))
 
 include_customer_entity = st.sidebar.checkbox(get_text('forecast.includeCustomer'), value=True)
@@ -116,6 +118,7 @@ if  st.session_state.predict_data:
         # Extract actual data and forecast data
         data = predict_data["predict_data"]['data']
         forecast_data = predict_data["predict_data"]['forecast']
+        predict_field = job_metadata['predict_field']
 
         # Convert both data and forecast_data into DataFrames
         data = pd.DataFrame(data)

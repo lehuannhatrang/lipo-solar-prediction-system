@@ -5,7 +5,7 @@ from routes import RouteName, get_url
 import pandas as pd
 from datetime import timedelta
 import numpy as np
-from utils_i18n.i18n import get_text
+from utils.i18n import get_text
 
 auth_request = AuthenRequest()
 
@@ -18,12 +18,23 @@ def get_all_device_ids(device_type, include_customer_entity=True):
     return response.json()['data']
 
 def render_sidebar_navigation():
-    st.sidebar.page_link('Homepage.py', label=get_text('common.home'))
-    st.sidebar.page_link('pages/Collections.py', label=get_text('common.collections'))
-    st.sidebar.page_link('pages/Forecast.py', label=get_text('common.forecast'))
-    st.sidebar.page_link('pages/Anomaly_Detection.py', label=get_text('common.anomalyDetection'))
-    st.sidebar.page_link('pages/UserLicense.py', label=get_text('common.userLicense'))
-    st.sidebar.page_link('pages/Settings.py', label=get_text('common.settings'))
+    # Initialize navigation state if not exists
+    if 'nav_state' not in st.session_state:
+        st.session_state.nav_state = {
+            'current_page': None,
+            'initialized': True
+        }
+    
+    try:
+        with st.sidebar:
+            st.page_link('Homepage.py', label=get_text('common.home'))
+            st.page_link('pages/Collections.py', label=get_text('common.collections'))
+            st.page_link('pages/Forecast.py', label=get_text('common.forecast'))
+            st.page_link('pages/Anomaly_Detection.py', label=get_text('common.anomalyDetection'))
+            st.page_link('pages/UserLicense.py', label=get_text('common.userLicense'))
+            st.page_link('pages/Settings.py', label=get_text('common.settings'))
+    except Exception as e:
+        st.error(f"Navigation error: {str(e)}")
 
 def get_device_fields(device_id):
     params = {
