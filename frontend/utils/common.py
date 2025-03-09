@@ -30,6 +30,7 @@ def render_sidebar_navigation():
             st.page_link('Homepage.py', label=get_text('common.home'))
             st.page_link('pages/Collections.py', label=get_text('common.collections'))
             st.page_link('pages/Forecast.py', label=get_text('common.forecast'))
+            st.page_link('pages/RUL_Prediction.py', label=get_text('common.rulPrediction'))
             st.page_link('pages/Anomaly_Detection.py', label=get_text('common.anomalyDetection'))
             st.page_link('pages/UserLicense.py', label=get_text('common.userLicense'))
             st.page_link('pages/Settings.py', label=get_text('common.settings'))

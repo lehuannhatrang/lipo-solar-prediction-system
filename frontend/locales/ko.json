@@ -19,7 +19,8 @@
     "forecast": "예측",
     "anomalyDetection": "이상 감지",
     "settings": "설정",
-    "userLicense": "사용자 라이셀"
+    "userLicense": "사용자 라이셀",
+    "rulPrediction": "RUL 예측"
   },
   "home": {
     "title": "대시보드",
@@ -38,7 +39,7 @@
     "userNotFound": "사용자 정보를 찾을 수 없습니다"
   },
   "forecast": {
-    "title": "태양광 발전 예측",
+    "title": "예측",
     "date": "날짜",
     "power": "발전량",
     "prediction": "예측",
@@ -112,5 +113,8 @@
     "createError": "Error creating license: {error}",
     "updateError": "Error updating license status: {error}",
     "loadError": "Error loading user licenses: {error}"
+  },
+  "RulPrediction": {
+    "title": "RUL 예측"
   }
 }

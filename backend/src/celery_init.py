@@ -95,3 +95,60 @@ def forecast_async(predict_field: str, timeseries_data: list) -> int:
             
     except Exception as e:
         raise Exception(f"Failed to call SageMaker endpoint: {str(e)}")
+
+# @celery_app.task(name="rul_async")
+@shared_task(ignore_result=False)
+def rul_async(timeseries_data: list):
+    """Asynchronous task to predict RUL using SageMaker endpoint
+    
+    Args:
+        timeseries_data (list): List of time series data points
+        
+    Returns:
+        dict: Dictionary containing the prediction results
+    """
+    # Initialize the SageMaker runtime client
+    endpoint_name = 'rul-predictor-serverless'
+    region = os.environ.get('AWS_DEFAULT_REGION', 'ap-northeast-2')
+    aws_access_key = os.getenv('AWS_ACCESS_KEY_ID')
+    aws_secret_key = os.getenv('AWS_SECRET_ACCESS_KEY')
+    
+    sagemaker_runtime = boto3.client(
+        'sagemaker-runtime',
+        region_name=region,
+        aws_access_key_id=aws_access_key,
+        aws_secret_access_key=aws_secret_key,
+    )
+    
+    # Send the request
+    try:
+        # Prepare input data
+        input_data = np.random.rand(1, 10, 3).tolist()  # TODO: Replace with actual data processing
+        
+        body = json.dumps({"features": input_data})
+        
+        response = sagemaker_runtime.invoke_endpoint(
+            EndpointName=endpoint_name,
+            Body=body,
+            Accept='application/json',
+            ContentType='application/json'
+        )
+        status_code = response["ResponseMetadata"]["HTTPStatusCode"]
+        
+        if status_code == 200:
+            response_data = response["Body"].read().decode("utf-8")
+            predictions = json.loads(response_data)['predictions'][0]
+            
+            # Process predictions
+            result = {
+                'rul_prediction': predictions[0],  # Assuming single RUL value
+                'timestamp': datetime.now().isoformat()
+            }
+            
+            return result
+        else:
+            raise Exception(f"Error calling SageMaker endpoint: {status_code} - {response}")
+            
+    except Exception as e:
+        raise Exception(f"Failed to call SageMaker endpoint: {str(e)}")
+

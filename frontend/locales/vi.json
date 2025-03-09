@@ -19,7 +19,8 @@
     "forecast": "Dự báo",
     "anomalyDetection": "Phát hiện Bất thường",
     "settings": "Cài đặt",
-    "userLicense": "Quyền người dùng"
+    "userLicense": "Quyền người dùng",
+    "rulPrediction": "Dự đoán RUL"
   },
   "home": {
     "title": "Bảng điều khiển",
@@ -38,7 +39,7 @@
     "userNotFound": "Không tìm thấy thông tin người dùng"
   },
   "forecast": {
-    "title": "Dự báo Năng lượng Mặt trời",
+    "title": "Dự báo",
     "date": "Ngày",
     "power": "Công suất",
     "prediction": "Dự đoán",
@@ -112,5 +113,8 @@
     "createError": "Loại lỗi khi tạo quyen: {error}",
     "updateError": "Loại lỗi khi cập nhật trạng thái quyen: {error}",
     "loadError": "Loại lỗi khi lấy dữ liệu: {error}"
+  },
+  "RulPrediction": {
+    "title": "Dự đoán RUL"
   }
 }

@@ -19,7 +19,8 @@
     "forecast": "Forecast",
     "anomalyDetection": "Anomaly Detection",
     "settings": "Settings",
-    "userLicense": "User License"
+    "userLicense": "User License",
+    "rulPrediction": "RUL Prediction"
   },
   "home": {
     "title": "Dashboards",
@@ -38,7 +39,7 @@
     "userNotFound": "User information not found"
   },
   "forecast": {
-    "title": "Solar Power Forecast",
+    "title": "Forecast",
     "date": "Date",
     "power": "Power Output",
     "prediction": "Prediction",
@@ -112,5 +113,8 @@
     "createError": "Error creating license: {error}",
     "updateError": "Error updating license status: {error}",
     "loadError": "Error loading user licenses: {error}"
+  },
+  "RulPrediction": {
+    "title": "RUL Prediction"
   }
 }

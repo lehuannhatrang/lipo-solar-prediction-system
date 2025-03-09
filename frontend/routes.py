@@ -14,24 +14,28 @@ class RouteName(Enum):
     GET_DEVICE_FIELDS = 'GET_DEVICE_FIELDS'
     GET_DEVICE_DATA = 'GET_DEVICE_DATA'
     GET_FORECAST = 'GET_FORECAST'
+    GET_RUL_PREDICTION = 'GET_RUL_PREDICTION'
     POST_REQUEST_FORECAST = 'POST_REQUEST_FORECAST'
     POST_LOGIN = 'POST_LOGIN'
     GET_USER_LICENSES = 'GET_USER_LICENSES'
     GET_USER_LICENSE = 'GET_USER_LICENSE'
     PUT_USER_LICENSE = 'PUT_USER_LICENSE'
     POST_USER_LICENSE = 'POST_USER_LICENSE'
+    POST_RUL_PREDICTION = 'POST_RUL_PREDICTION'
 
 ROUTES = {
     "GET_ALL_BATTERY_ID": '/devices/all-ids',
     'GET_DEVICE_FIELDS': '/devices/fields',
     'GET_DEVICE_DATA': '/device/{device_id}',
     'GET_FORECAST': '/forecast/{job_id}',
+    'GET_RUL_PREDICTION': '/prediction/rul/{job_id}',
     'POST_REQUEST_FORECAST': '/forecast-request',
     'POST_LOGIN': '/auth/login',
     'GET_USER_LICENSES': '/user-license',
     'GET_USER_LICENSE': '/user-license/{email}',
     'PUT_USER_LICENSE': '/user-license/{email}',
-    'POST_USER_LICENSE': '/user-license'
+    'POST_USER_LICENSE': '/user-license',
+    'POST_RUL_PREDICTION': '/prediction/rul'
 }
 
 def get_url(route_name, **kwargs):

@@ -5,8 +5,6 @@ import time
 from routes import get_url, RouteName
 from utils.i18n import get_text
 
-st.set_page_config(layout='centered', initial_sidebar_state='collapsed')
-
 st_ls = st_local_storage.StLocalStorage()
 
 token = st_ls.get('token', cached=False)
