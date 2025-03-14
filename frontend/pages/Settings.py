@@ -1,7 +1,7 @@
 import streamlit as st
 from utils import set_page_config
 
-set_page_config()
+# set_page_config()
 
 from authentication import check_authenticate, AuthenRequest
 from components.language_selector import language_selector

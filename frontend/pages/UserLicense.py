@@ -1,7 +1,7 @@
 import streamlit as st
 from utils import set_page_config
 
-set_page_config()
+# set_page_config()
 
 from datetime import datetime
 import pandas as pd

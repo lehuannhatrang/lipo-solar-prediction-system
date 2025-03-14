@@ -18,13 +18,11 @@ with open('style.css') as f:
 # user_profile()
 
 # Row A
-st.markdown(f'## {get_text("home.title")}')
-st.markdown(f'### {get_text("home.liBattery")}')
+st.markdown(f'# {get_text("home.title")}')
+st.markdown(f'## {get_text("home.liBattery")}')
 col1, col2 = st.columns(2)
-col1.metric(get_text("home.total"), "10", "1")
-col2.metric(get_text("home.anomaly"), "0", "-1")
+col1.metric(get_text("home.total"), "20", "1")
 
-st.markdown(f'### {get_text("home.solarPanel")}')
+st.markdown(f'## {get_text("home.solarPanel")}')
 col1, col2 = st.columns(2)
-col1.metric(get_text("home.total"), "100", "22")
-col2.metric(get_text("home.anomaly"), "3", "2")
+col1.metric(get_text("home.total"), "25", "2")

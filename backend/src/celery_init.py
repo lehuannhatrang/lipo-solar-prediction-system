@@ -82,7 +82,7 @@ def forecast_async(predict_field: str, timeseries_data: list) -> int:
             predictions_data = json.loads(response_data)['predictions'][0]
 
             forecast_data = [
-                {'timestamp': (datetime.now() + i * timedelta(hours=6)).isoformat(), predict_field: predictions_data[i]*100} for i in range(len(predictions_data))
+                {'timestamp': (datetime.now() + i * timedelta(hours=6)).isoformat(), predict_field: predictions_data[i]*100 + 60} for i in range(len(predictions_data))
             ]
 
             result = {
@@ -141,7 +141,7 @@ def rul_async(timeseries_data: list):
             
             # Process predictions
             result = {
-                'rul_prediction': predictions[0],  # Assuming single RUL value
+                'rul_prediction': predictions[0]*3600*24,  # Assuming single RUL value
                 'timestamp': datetime.now().isoformat()
             }
             

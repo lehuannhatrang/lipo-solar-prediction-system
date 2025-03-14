@@ -1,7 +1,7 @@
 import streamlit as st
 from utils import set_page_config
 
-set_page_config()
+# set_page_config()
 
 import pandas as pd
 from authentication import check_authenticate

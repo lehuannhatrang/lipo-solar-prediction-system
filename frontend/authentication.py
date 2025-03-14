@@ -55,19 +55,14 @@ class AuthenRequest:
         return {"x-authorization": f"Bearer {token}"}
 
     def request(self, method: str, url: str, **kwargs) -> requests.Response:
-        """
-        Make an HTTP request with the Authorization header included.
-
-        :param method: HTTP method (GET, POST, etc.)
-        :param url: The URL to send the request to.
-        :param kwargs: Additional arguments passed to `requests.request`.
-        :return: The Response object.
-        """
         headers = kwargs.get("headers", {})
-        # Merge Authorization header with any existing headers
         headers.update(self._get_auth_header())
         kwargs["headers"] = headers
-        return requests.request(method, url, **kwargs)
+        response = requests.request(method, url, **kwargs)
+        if response.status_code == 401:
+            self.log_out()
+            st.switch_page("pages/Login.py")
+        return response
 
     def get(self, url: str, **kwargs) -> requests.Response:
         return self.request("GET", url, **kwargs)
